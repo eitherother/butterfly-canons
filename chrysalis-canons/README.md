@@ -1,4 +1,4 @@
-# piffaro03
+# chrysalis-canons
 
 A generative improvisation piece for SuperCollider, driven by a conductor/
 score system with MIDI input and Python-generated score data.
@@ -23,4 +23,4 @@ local file layout.
 `score_raw.py`, `score_emit.py`, `harmony_octaves.py`, and `midi_notes.py`
 generate/process score data (see `harmony.txt`, `melody.txt`, and
 `score_generated.scd`). Run via `uv run python <script>.py` from the repo
-root, or `cd piffaro03 && uv run --project .. python <script>.py`.
+root, or `cd chrysalis-canons && uv run --project .. python <script>.py`.

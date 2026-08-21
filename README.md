@@ -5,7 +5,7 @@ in SuperCollider with supporting Python tooling.
 
 ## Structure
 
-Each piece lives in its own top-level folder (e.g. `piffaro03/`) and is
+Each piece lives in its own top-level folder (e.g. `chrysalis-canons/`) and is
 self-contained — its own conductor, synths, score, and any Python helper
 scripts. Pieces intentionally don't share a common engine: SuperCollider has
 no test framework, so keeping pieces independent means a change to one can't

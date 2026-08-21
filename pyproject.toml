@@ -41,10 +41,10 @@ known-first-party = []
 # rhythm grids). The formatter's "one item per line" wrapping makes them
 # far less readable, not more, so they're excluded from auto-formatting.
 exclude = [
-    "piffaro03/score_raw.py",
-    "piffaro03/harmony_octaves.py",
-    "piffaro03/score_emit.py",
-    "piffaro03/midi_notes.py",
+    "chrysalis-canons/score_raw.py",
+    "chrysalis-canons/harmony_octaves.py",
+    "chrysalis-canons/score_emit.py",
+    "chrysalis-canons/midi_notes.py",
 ]
 
 [tool.uv]
