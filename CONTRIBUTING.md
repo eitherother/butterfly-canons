@@ -35,7 +35,7 @@ before opening a PR is expected. A real automated check may be added later.
 
 ## Project structure
 
-Each piece (`piffaro03/`, and future pieces) is self-contained: its own
+Each piece (`chrysalis-canons/`, and future pieces) is self-contained: its own
 `conductor.scd`, `synths.scd`, `score.scd`, etc. This is deliberate — pieces
 don't share a common engine, so a change to one piece can't silently break
 another. Some duplication across pieces is the accepted tradeoff.
