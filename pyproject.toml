@@ -5,9 +5,7 @@ description = "An open source generative music improvisation environment"
 readme = "README.md"
 license = { file = "LICENSE" }
 requires-python = ">=3.10"
-dependencies = [
-    "mido>=1.3",
-]
+dependencies = []
 
 [dependency-groups]
 dev = [
@@ -35,17 +33,6 @@ ignore = [
 
 [tool.ruff.lint.isort]
 known-first-party = []
-
-[tool.ruff.format]
-# These scripts are mostly large literal music-data tables (note sets,
-# rhythm grids). The formatter's "one item per line" wrapping makes them
-# far less readable, not more, so they're excluded from auto-formatting.
-exclude = [
-    "chrysalis-canons/score_raw.py",
-    "chrysalis-canons/harmony_octaves.py",
-    "chrysalis-canons/score_emit.py",
-    "chrysalis-canons/midi_notes.py",
-]
 
 [tool.uv]
 package = false

@@ -144,14 +144,6 @@
 ~f6 = ~qn / 6;
 ~f9 = ~qn / 9;
 
-
-// ~flowSteps[i] collects the i-th entry of every ~rawSteps step (0-3:
-// harmony/pnpp arpeggios, 4-7: melody), wrapped as step events for
-// ~buildBufSeq.
-~flowSteps = (0..7).collect { |i|
-	~rawSteps.collect { |step| (buffers: step[i], repeats: [1]) }
-};
-
 ~music = ~in_nomine_6;
 
 
