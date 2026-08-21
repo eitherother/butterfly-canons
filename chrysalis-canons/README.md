@@ -1,22 +1,14 @@
 # chrysalis-canons
 
-A generative improvisation piece for SuperCollider, driven by a conductor/
-score system with MIDI input.
+Chrysalis Canons is a composition based on music from the Renaissance,
+specifically those based on the ancient hymn tune
+[A solis ortus cardine](https://en.wikipedia.org/wiki/A_solis_ortus_cardine).
+Though you could in principle load any recording of these pieces into the
+framework, I wrote this composition using recordings from the excellent
+Renaissance music ensemble [Piffaro](https://piffaro.org/) and if you
+would like to try the composition for yourself, I recommend you check
+out their music and buy the recording.
 
-## Loading
-
-Copy `config.example.scd` (repo root) to `config.scd` and fill in your local
-`~sampleLibraryRoot`/`~recordDir` paths. Then open `init.scd` and evaluate
-the one block at the top — it boots the server, loads everything in order,
-and wires up MIDI. Watch the post window for "Ready to play." Scene
-selection and recording are separate, performance-time calls listed below
-that block (`~loadScene`, `~record`, `~stopRecording`).
-
-## External audio dependency
-
-`samples.scd` loads audio via `Buffer.read` from `~sampleLibraryRoot`,
-including tracks from the commercial recording *Piffaro: Back Before Bach —
-Musical Journeys*. That audio is **not included** in this repository and is
-not covered by the repo's MIT license — you'll need your own copy of the
-recording, laid out under your `~sampleLibraryRoot` to match the relative
-paths in `samples.scd`.
+Note that the original recording is NOT included as part of this repository,
+and that the composition treats the recording as a plugin, and retains no
+hard-coded vestige of the source recording at all.
