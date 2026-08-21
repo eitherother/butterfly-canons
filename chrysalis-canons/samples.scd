@@ -78,14 +78,11 @@
 	}.play;
 	newBuf
 };
-);
-
 
 // ~in_nomine_fragment = ~fragmentBuffer.(~in_nomine_6);
 // ~gloria_fragment = ~fragmentBuffer.(~mass_gloria);
 // ~kyrie_fragment = ~fragmentBuffer.(~mass_kyrie);
 
-(
 ~vln = Dictionary.new;
 ~vla  = Dictionary.new;
 ~vcl  = Dictionary.new;
@@ -102,6 +99,11 @@
 ~marimba = Dictionary.new;
 ~vib = Dictionary.new;
 
+
+// Signaled once loading finishes — init.scd waits on this instead of
+// s.sync, since buffer loading runs in its own Routine (~load_samples),
+// independent of whatever fork/routine called load() on this file.
+~buffersLoaded = Condition.new;
 
 ~load_samples = Routine {
 	var pnffFolder    = ~sampleLibraryRoot ++ "pnff/";
@@ -325,5 +327,7 @@
 
 	s.sync;
 	"Buffers loaded:".postln;
+	~buffersLoaded.test = true;
+	~buffersLoaded.signal;
 }.play;
 )

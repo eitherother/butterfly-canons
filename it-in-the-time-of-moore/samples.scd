@@ -63,6 +63,11 @@
 ~vib = Dictionary.new;
 
 
+// Signaled once loading finishes — init.scd waits on this instead of
+// s.sync, since buffer loading runs in its own Routine (~load_samples),
+// independent of whatever fork/routine called load() on this file.
+~buffersLoaded = Condition.new;
+
 ~load_samples = Routine {
 	var pnffFolder    = ~sampleLibraryRoot ++ "pnff/";
 	var pnmfFolder    = ~sampleLibraryRoot ++ "pnmf/";
@@ -168,5 +173,7 @@
 	("  vla:  " ++ ~vla.size).postln;
 	("  vcl:  " ++ ~vcl.size).postln;
 	("  bass: " ++ ~bass.size).postln;
+	~buffersLoaded.test = true;
+	~buffersLoaded.signal;
 }.play;
 )

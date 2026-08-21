@@ -11,8 +11,9 @@ scripts. Pieces intentionally don't share a common engine: SuperCollider has
 no test framework, so keeping pieces independent means a change to one can't
 silently break another.
 
-Shared, general-purpose Python scripts that aren't tied to any one piece
-live in `python-utilities/`.
+Small, generic helpers that carry no piece-specific logic — not the engine
+itself — are the one exception: `python-utilities/` for Python,
+`supercollider-utilities/` for SuperCollider.
 
 ## Getting started
 

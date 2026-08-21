@@ -6,9 +6,11 @@ score system with MIDI input.
 ## Loading
 
 Copy `config.example.scd` (repo root) to `config.scd` and fill in your local
-`~sampleLibraryRoot`/`~recordDir` paths — `init.scd` loads it first and
-errors with instructions if it's missing. Then see `init.scd` for load
-order (synths → signal flow → samples, then conductor → rhythm → score).
+`~sampleLibraryRoot`/`~recordDir` paths. Then open `init.scd` and evaluate
+the one block at the top — it boots the server, loads everything in order,
+and wires up MIDI. Watch the post window for "Ready to play." Scene
+selection and recording are separate, performance-time calls listed below
+that block (`~loadScene`, `~record`, `~stopRecording`).
 
 ## External audio dependency
 
