@@ -31,7 +31,6 @@ s.waitForBoot {
 var dir = thisProcess.nowExecutingPath.dirname;
 load(dir +/+ "conductor.scd");
 load(dir +/+ "rhythm.scd");
-load(dir +/+ "score_generated.scd");
 load(dir +/+ "score.scd");
 MIDIIn.connectAll;
 
