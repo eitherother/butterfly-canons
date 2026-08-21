@@ -6,21 +6,19 @@ python-utilities/<script>.py ...` from the repo root.
 ## midi_notes.py
 
 Transcribe a MIDI file into `melody.txt`-style lines: extracts note-ons,
-splits them into groups on an A0 note (used as a manual "next line"
-delimiter while playing), and prints each group as a `["C4", "E4", ...]`
-array.
+splits them into groups on a delimiter note (default `A0`, used as a manual
+"next line" marker while playing), and prints each group as a
+`["C4", "E4", ...]` array.
 
 ```
-uv run python python-utilities/midi_notes.py <file.mid>
+uv run python python-utilities/midi_notes.py <file.mid> [--delimiter A0]
 ```
 
-## print_notes.py
+## midi_notes_chunked.py
 
-Chunk a MIDI file's note-ons into SuperCollider buffer references, e.g.
-`~bass[\C3], ~pnmf[\E4], ~pnmf[\G4], ~pnmf[\C5],`. Instrument tags, chunk
-size, and the bass note's octave shift are all configurable:
+Same as `midi_notes.py`, but splits into fixed-size groups instead of on a
+delimiter note.
 
 ```
-uv run python python-utilities/print_notes.py <file.mid> \
-  --chunk-size 4 --bass-tag bass --other-tag pnmf --bass-shift -12
+uv run python python-utilities/midi_notes_chunked.py <file.mid> [--chunk-size 4]
 ```
