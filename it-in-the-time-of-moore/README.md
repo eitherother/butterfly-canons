@@ -9,9 +9,8 @@ Copy `config.example.scd` (repo root) to `config.scd` and fill in your local
 `~sampleLibraryRoot`/`~recordDir` paths. Then open `init.scd` and evaluate
 the one block at the top — it boots the server, loads everything in order,
 and wires up MIDI. Watch the post window for "Ready to play." Scene
-selection, recording, and MIDI teardown are separate, performance-time
-calls listed below that block (`~loadScene`, `~record`, `~stopRecording`,
-`~teardownMidi`).
+selection and recording are separate, performance-time calls listed below
+that block (`~loadScene`, `~record`, `~stopRecording`).
 
 ## External audio dependency
 

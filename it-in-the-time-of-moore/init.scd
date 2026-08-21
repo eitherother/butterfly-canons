@@ -11,7 +11,6 @@
 //   ~loadScene.(sceneIndex, chordIndex)   — start/switch a scene
 //   ~record.(baseName)                    — start recording
 //   ~stopRecording.()                     — stop recording
-//   ~teardownMidi.()                      — clear MIDI defs (rare)
 // ============================================================
 
 (
@@ -47,12 +46,8 @@ s.waitForBoot {
 };
 )
 
-// freeze: 73, 10
-// spectral: 17
-// reverb: 17
-
 // ---- Performance-time actions — evaluate individually, whenever -----
-~record.("ItInTheTimeOfMoore_draft4_");
+~record.("ItInTheTimeOfMoore_");
 ~stopRecording.()
 
 ~loadScene.(0, 0)

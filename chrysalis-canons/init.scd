@@ -11,7 +11,6 @@
 //   ~loadScene.(sceneIndex, chordIndex)   — start/switch a scene
 //   ~record.(baseName)                    — start recording
 //   ~stopRecording.()                     — stop recording
-//   ~teardownMidi.()                      — clear MIDI defs (rare)
 // ============================================================
 
 (
@@ -48,12 +47,8 @@ s.waitForBoot {
 )
 
 // ---- Performance-time actions — evaluate individually, whenever -----
-~record.("Piffaro_butterfly_canon_01_SolorIstus_");
+~record.("ChrysalisCanons_");
 
 ~stopRecording.()
 
 ~loadScene.(2, 0);
-
-// to do
-// make buffers of different lengths
-// button to switch/rotate witch
