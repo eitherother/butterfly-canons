@@ -12,6 +12,9 @@ __pycache__/
 *.scsyndef
 synthdefs/
 
+# Local machine config (machine-specific, not shared — see config.example.scd)
+/config.scd
+
 # Claude Code local settings (machine-specific, not shared)
 .claude/settings.local.json
 **/.claude/settings.local.json

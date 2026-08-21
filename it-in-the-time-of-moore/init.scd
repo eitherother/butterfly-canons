@@ -1,7 +1,10 @@
 // ============================================================
 // TVP3 — Init
 // ============================================================
-// BLOCK 1: Evaluate first. Boots server, loads synths, signal
+// BLOCK 0: Evaluate first of all. Loads local machine paths from
+//          config.scd (repo root) — see config.example.scd.
+//
+// BLOCK 1: Evaluate next. Boots server, loads synths, signal
 //          flow, and starts async buffer loading.
 //          Wait for "Buffers loaded" in the post window.
 //
@@ -10,6 +13,19 @@
 //
 // Then load tvp3_midi.scd manually (needs MIDIOut device index).
 // ============================================================
+
+// ---- Block 0: Load local machine config ---------------------
+(
+var dir = thisProcess.nowExecutingPath.dirname;
+var configPath = dir +/+ ".." +/+ "config.scd";
+if (File.exists(configPath)) {
+	load(configPath);
+} {
+	Error(
+		"Missing %.\nCopy config.example.scd to config.scd (repo root) and fill in your local paths.".format(configPath)
+	).throw;
+};
+)
 
 // ---- Block 1 -----------------------------------------------
 (
@@ -38,8 +54,9 @@ load(dir +/+ "score.scd");
 MIDIIn.connectAll;
 
 
-~record = { |baseName = "improv", dir = "/Volumes/Samsung_T1/improv/"|
+~record = { |baseName = "improv", dir|
     var i = 1, path;
+    if (dir.isNil) { dir = ~recordDir };
     while {
         path = dir ++ baseName ++ i.asString.padLeft(2, "0") ++ ".wav";
         File.exists(path)
