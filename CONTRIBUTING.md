@@ -31,11 +31,11 @@ uv run pre-commit install
 
 ## SuperCollider
 
-There's no formal linter for `.scd`/`.sc` files. CI does a best-effort
-compile-only syntax check (`tools/check_scd_syntax.scd`) that catches parse
-errors without needing a booted server, MIDI hardware, or sample files. It
-won't catch logic errors — SuperCollider has no real test framework, so
-manual testing in the IDE before opening a PR is expected.
+There's no formal linter for `.scd`/`.sc` files, and no CI check for them
+yet — SuperCollider has no real test framework, and files here rely on the
+convention of multiple independently-evaluated top-level `(...)` blocks,
+which rules out a naive whole-file compile check. Manual testing in the IDE
+before opening a PR is expected. A real automated check may be added later.
 
 ## Project structure
 
