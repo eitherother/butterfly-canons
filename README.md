@@ -11,6 +11,9 @@ scripts. Pieces intentionally don't share a common engine: SuperCollider has
 no test framework, so keeping pieces independent means a change to one can't
 silently break another.
 
+Shared, general-purpose Python scripts that aren't tied to any one piece
+live in `python-utilities/`.
+
 ## Getting started
 
 Python dependencies are managed with [uv](https://docs.astral.sh/uv/):
@@ -24,8 +27,7 @@ piece's `init.scd` for load order and instructions.
 
 ## Development
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for the branch workflow, linting, and
-how the (best-effort) SuperCollider syntax check works.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the branch workflow and linting.
 
 ## License
 
