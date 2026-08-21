@@ -22,6 +22,10 @@ Python dependencies are managed with [uv](https://docs.astral.sh/uv/):
 uv sync
 ```
 
+Copy `config.example.scd` to `config.scd` and fill in your local sample
+library and recording-output paths — every piece's `init.scd` loads this
+before anything else.
+
 SuperCollider pieces are loaded from within the SuperCollider IDE — see each
 piece's `init.scd` for load order and instructions.
 

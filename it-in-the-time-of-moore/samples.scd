@@ -40,11 +40,11 @@
 ~pnpp.keys;
 */
 
-~music = Buffer.read(s, "/Volumes/Samsung_T1/SoundFiles/recordings/Berceuse.mp3");
-~music = Buffer.read(s, "/Volumes/Samsung_T1/SoundFiles/recordings/byrd_kyrie_mass_for_4.mp3");
-~music = Buffer.read(s, "/Volumes/Samsung_T1/SoundFiles/recordings/etude_mcmillan.wav");
-~music = Buffer.read(s, "/Volumes/Samsung_T1/SoundFiles/recordings/Lulalu.mp3");
-~music = Buffer.read(s, "/Volumes/Samsung_T1/SoundFiles/recordings/Liszt- Mephisto Waltz #1.mp3");
+~music = Buffer.read(s, ~sampleLibraryRoot ++ "recordings/Berceuse.mp3");
+~music = Buffer.read(s, ~sampleLibraryRoot ++ "recordings/byrd_kyrie_mass_for_4.mp3");
+~music = Buffer.read(s, ~sampleLibraryRoot ++ "recordings/etude_mcmillan.wav");
+~music = Buffer.read(s, ~sampleLibraryRoot ++ "recordings/Lulalu.mp3");
+~music = Buffer.read(s, ~sampleLibraryRoot ++ "recordings/Liszt- Mephisto Waltz #1.mp3");
 
 (
 ~vla  = Dictionary.new;
@@ -64,20 +64,20 @@
 
 
 ~load_samples = Routine {
-	var pnffFolder    = "/Volumes/Samsung_T1/SoundFiles/pnff/";
-	var pnmfFolder    = "/Volumes/Samsung_T1/SoundFiles/pnmf/";
-	var pnppFolder    = "/Volumes/Samsung_T1/SoundFiles/pnpp/";
-	var clFolder     = "/Volumes/Samsung_T1/SoundFiles/Clarinet/post2012/";
-	var fltFolder    = "/Volumes/Samsung_T1/SoundFiles/Flute/";
-	var oboeFolder   = "/Volumes/Samsung_T1/SoundFiles/Oboe/";
-	var bassoonFolder = "/Volumes/Samsung_T1/SoundFiles/Bassoon/";
-	var bassfltFolder = "/Volumes/Samsung_T1/SoundFiles/BassFlute";
-	var marimbafolder = "/Volumes/Samsung_T1/SoundFiles/Marimba.cord.ff.stereo/";
-	var vibFolder = "/Volumes/Samsung_T1/SoundFiles/Vibraphone.bow.stereo/";
+	var pnffFolder    = ~sampleLibraryRoot ++ "pnff/";
+	var pnmfFolder    = ~sampleLibraryRoot ++ "pnmf/";
+	var pnppFolder    = ~sampleLibraryRoot ++ "pnpp/";
+	var clFolder     = ~sampleLibraryRoot ++ "Clarinet/post2012/";
+	var fltFolder    = ~sampleLibraryRoot ++ "Flute/";
+	var oboeFolder   = ~sampleLibraryRoot ++ "Oboe/";
+	var bassoonFolder = ~sampleLibraryRoot ++ "Bassoon/";
+	var bassfltFolder = ~sampleLibraryRoot ++ "BassFlute";
+	var marimbafolder = ~sampleLibraryRoot ++ "Marimba.cord.ff.stereo/";
+	var vibFolder = ~sampleLibraryRoot ++ "Vibraphone.bow.stereo/";
 
-	~silence = Buffer.read(s, "/Volumes/Samsung_T1/SoundFiles/silence.wav");
+	~silence = Buffer.read(s, ~sampleLibraryRoot ++ "silence.wav");
 
-	~moore = Buffer.read(s, "/Volumes/Samsung_T1/SoundFiles/recordings/It in a Time of Moore.wav");
+	~moore = Buffer.read(s, ~sampleLibraryRoot ++ "recordings/It in a Time of Moore.wav");
 
 	PathName(vibFolder).files.do { |file|
 		var noteName = file.fileNameWithoutExtension.split($.).at(2).asSymbol;
@@ -115,39 +115,39 @@
 	};
 
 	[
-		"/Volumes/Samsung_T1/SoundFiles/Bass-pizz/Bass.pizz.ff.sulC.C1.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-pizz/Bass.pizz.ff.sulC.Db1.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-pizz/Bass.pizz.ff.sulC.D1.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-pizz/Bass.pizz.ff.sulC.Eb1.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-pizz/Bass.pizz.ff.sulE.E1.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-pizz/Bass.pizz.ff.sulE.F1.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-pizz/Bass.pizz.ff.sulE.Gb1.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-pizz/Bass.pizz.ff.sulE.G1.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-pizz/Bass.pizz.ff.sulE.Ab1.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-pizz/Bass.pizz.ff.sulA.A1.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-pizz/Bass.pizz.ff.sulA.Bb1.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-pizz/Bass.pizz.ff.sulA.B1.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-pizz/Bass.pizz.ff.sulA.C2.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-pizz/Bass.pizz.ff.sulA.Db2.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-pizz/Bass.pizz.ff.sulD.D2.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-pizz/Bass.pizz.ff.sulD.Eb2.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-pizz/Bass.pizz.ff.sulD.E2.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-pizz/Bass.pizz.ff.sulD.F2.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-pizz/Bass.pizz.ff.sulD.Gb2.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-pizz/Bass.pizz.ff.sulG.G2.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-pizz/Bass.pizz.ff.sulG.Ab2.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-pizz/Bass.pizz.ff.sulG.A2.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-pizz/Bass.pizz.ff.sulG.Bb2.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-pizz/Bass.pizz.ff.sulG.B2.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-pizz/Bass.pizz.ff.sulG.C3.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-pizz/Bass.pizz.ff.sulC.C1.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-pizz/Bass.pizz.ff.sulC.Db1.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-pizz/Bass.pizz.ff.sulC.D1.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-pizz/Bass.pizz.ff.sulC.Eb1.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-pizz/Bass.pizz.ff.sulE.E1.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-pizz/Bass.pizz.ff.sulE.F1.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-pizz/Bass.pizz.ff.sulE.Gb1.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-pizz/Bass.pizz.ff.sulE.G1.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-pizz/Bass.pizz.ff.sulE.Ab1.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-pizz/Bass.pizz.ff.sulA.A1.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-pizz/Bass.pizz.ff.sulA.Bb1.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-pizz/Bass.pizz.ff.sulA.B1.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-pizz/Bass.pizz.ff.sulA.C2.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-pizz/Bass.pizz.ff.sulA.Db2.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-pizz/Bass.pizz.ff.sulD.D2.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-pizz/Bass.pizz.ff.sulD.Eb2.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-pizz/Bass.pizz.ff.sulD.E2.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-pizz/Bass.pizz.ff.sulD.F2.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-pizz/Bass.pizz.ff.sulD.Gb2.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-pizz/Bass.pizz.ff.sulG.G2.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-pizz/Bass.pizz.ff.sulG.Ab2.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-pizz/Bass.pizz.ff.sulG.A2.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-pizz/Bass.pizz.ff.sulG.Bb2.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-pizz/Bass.pizz.ff.sulG.B2.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-pizz/Bass.pizz.ff.sulG.C3.stereo.aif",
 
-		"/Volumes/Samsung_T1/SoundFiles/Bass-pizz/Bass.pizz.ff.sulG.Db3.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-pizz/Bass.pizz.ff.sulG.D3.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-pizz/Bass.pizz.ff.sulG.Eb3.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-pizz/Bass.pizz.ff.sulG.E3.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-pizz/Bass.pizz.ff.sulG.F3.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-pizz/Bass.pizz.ff.sulG.Gb3.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-pizz/Bass.pizz.ff.sulG.G3.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-pizz/Bass.pizz.ff.sulG.Db3.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-pizz/Bass.pizz.ff.sulG.D3.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-pizz/Bass.pizz.ff.sulG.Eb3.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-pizz/Bass.pizz.ff.sulG.E3.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-pizz/Bass.pizz.ff.sulG.F3.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-pizz/Bass.pizz.ff.sulG.Gb3.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-pizz/Bass.pizz.ff.sulG.G3.stereo.aif",
 
 	].do { |path|
 		var noteName = PathName(path).fileNameWithoutExtension.split($.).at(4).asSymbol;
