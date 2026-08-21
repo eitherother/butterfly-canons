@@ -22,12 +22,8 @@ uv run ruff check .      # lint
 uv run ruff format .     # format
 ```
 
-Optional: install the pre-commit hooks so lint/format run automatically on
-`git commit`:
-
-```
-uv run pre-commit install
-```
+CI runs `ruff check` and `ruff format --check` on every PR, so run these
+locally before pushing.
 
 ## SuperCollider
 
