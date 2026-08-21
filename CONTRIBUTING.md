@@ -40,6 +40,12 @@ Each piece (`chrysalis-canons/`, and future pieces) is self-contained: its own
 don't share a common engine, so a change to one piece can't silently break
 another. Some duplication across pieces is the accepted tradeoff.
 
+The one exception is `supercollider-utilities/` (and `python-utilities/`):
+small, generic helpers with no piece-specific logic — e.g. a recording
+start/stop wrapper. Before adding something there, make sure it's genuinely
+generic; anything that touches a piece's synths, conductor, or score belongs
+in that piece, not shared.
+
 If a piece depends on external audio (samples, recordings) that aren't
 included in the repo, note that in the piece's own README rather than
 committing the audio.

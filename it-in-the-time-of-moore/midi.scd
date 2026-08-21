@@ -138,5 +138,9 @@ MIDIdef.cc(\g_layer3,  { |val| if (val > 0) { ~onLayerToggle.(2) } },      52, c
 )*/
 
 
-// --- Teardown ------------------------------------------------
-MIDIdef.freeAll;
+// --- Teardown --------------------------------------------------
+// Defined, not invoked — this file is auto-loaded as part of init.scd,
+// so running MIDIdef.freeAll here would immediately undo the MIDI setup
+// above. Call ~teardownMidi.() by hand when you actually want to clear
+// MIDI defs (e.g. before reloading).
+~teardownMidi = { MIDIdef.freeAll; "MIDI defs cleared.".postln; };

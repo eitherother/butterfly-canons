@@ -1,23 +1,24 @@
 // ============================================================
 // TVP3 — Init
 // ============================================================
-// BLOCK 0: Evaluate first of all. Loads local machine paths from
-//          config.scd (repo root) — see config.example.scd.
+// Evaluate the block below once: loads local config, boots the
+// server, loads synths → signal flow → samples (waiting for
+// buffers to actually finish loading), then conductor → rhythm →
+// score, connects MIDI input, and wires up midi.scd. Watch the
+// post window for "Ready to play." when it's done.
 //
-// BLOCK 1: Evaluate next. Boots server, loads synths, signal
-//          flow, and starts async buffer loading.
-//          Wait for "Buffers loaded" in the post window.
-//
-// BLOCK 2: Evaluate after "Buffers loaded". Loads conductor,
-//          rhythm, score, and calls ~loadScene.(0).
-//
-// Then load tvp3_midi.scd manually (needs MIDIOut device index).
+// Then, whenever you want (performance-time, not init):
+//   ~loadScene.(sceneIndex, chordIndex)   — start/switch a scene
+//   ~record.(baseName)                    — start recording
+//   ~stopRecording.()                     — stop recording
+//   ~teardownMidi.()                      — clear MIDI defs (rare)
 // ============================================================
 
-// ---- Block 0: Load local machine config ---------------------
 (
 var dir = thisProcess.nowExecutingPath.dirname;
 var configPath = dir +/+ ".." +/+ "config.scd";
+var utilDir = dir +/+ ".." +/+ "supercollider-utilities";
+
 if (File.exists(configPath)) {
 	load(configPath);
 } {
@@ -25,11 +26,9 @@ if (File.exists(configPath)) {
 		"Missing %.\nCopy config.example.scd to config.scd (repo root) and fill in your local paths.".format(configPath)
 	).throw;
 };
-)
 
-// ---- Block 1 -----------------------------------------------
-(
-var dir = thisProcess.nowExecutingPath.dirname;
+load(utilDir +/+ "recording.scd");
+
 s.waitForBoot {
 	fork {
 		load(dir +/+ "synths.scd");
@@ -37,6 +36,13 @@ s.waitForBoot {
 		load(dir +/+ "signal_flow.scd");
 		s.sync;
 		load(dir +/+ "samples.scd");
+		~buffersLoaded.wait;
+		load(dir +/+ "conductor.scd");
+		load(dir +/+ "rhythm.scd");
+		load(dir +/+ "score.scd");
+		MIDIIn.connectAll;
+		load(dir +/+ "midi.scd");
+		"Ready to play. Evaluate ~loadScene.(sceneIndex, chordIndex) to start.".postln;
 	};
 };
 )
@@ -45,32 +51,8 @@ s.waitForBoot {
 // spectral: 17
 // reverb: 17
 
-// ---- Block 2 (after "Buffers loaded") ----------------------
-(
-var dir = thisProcess.nowExecutingPath.dirname;
-load(dir +/+ "conductor.scd");
-load(dir +/+ "rhythm.scd");
-load(dir +/+ "score.scd");
-MIDIIn.connectAll;
-
-
-~record = { |baseName = "improv", dir|
-    var i = 1, path;
-    if (dir.isNil) { dir = ~recordDir };
-    while {
-        path = dir ++ baseName ++ i.asString.padLeft(2, "0") ++ ".wav";
-        File.exists(path)
-    } { i = i + 1 };
-    s.record(path: path);
-    ("Recording to: " ++ path).postln;
-};
-~stopRecording = { s.stopRecording };
-)
-
+// ---- Performance-time actions — evaluate individually, whenever -----
 ~record.("ItInTheTimeOfMoore_draft4_");
 ~stopRecording.()
 
-
 ~loadScene.(0, 0)
-
-
