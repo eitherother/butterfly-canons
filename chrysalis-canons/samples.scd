@@ -78,14 +78,11 @@
 	}.play;
 	newBuf
 };
-);
-
 
 // ~in_nomine_fragment = ~fragmentBuffer.(~in_nomine_6);
 // ~gloria_fragment = ~fragmentBuffer.(~mass_gloria);
 // ~kyrie_fragment = ~fragmentBuffer.(~mass_kyrie);
 
-(
 ~vln = Dictionary.new;
 ~vla  = Dictionary.new;
 ~vcl  = Dictionary.new;
