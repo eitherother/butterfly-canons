@@ -21,8 +21,8 @@ import shutil
 import numpy as np
 import soundfile as sf
 
-THRESHOLD = 0.01   # fraction of peak amplitude
-PRE_ROLL_MS = 5    # milliseconds to keep before detected onset
+THRESHOLD = 0.01  # fraction of peak amplitude
+PRE_ROLL_MS = 5  # milliseconds to keep before detected onset
 
 
 def detect_start_frame(audio, sr, threshold):
@@ -43,11 +43,15 @@ def parse_args():
         description="Trim silence from the start of audio samples in a folder.",
     )
     parser.add_argument(
-        "folder", nargs="?", default=".",
+        "folder",
+        nargs="?",
+        default=".",
         help="folder containing .wav/.aif/.aiff samples (default: current directory)",
     )
     parser.add_argument(
-        "--threshold", type=float, default=THRESHOLD,
+        "--threshold",
+        type=float,
+        default=THRESHOLD,
         help=f"onset threshold as a fraction of peak amplitude (default: {THRESHOLD})",
     )
     return parser.parse_args()
