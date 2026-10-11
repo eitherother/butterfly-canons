@@ -1,7 +1,7 @@
 // ============================================================
-// TVP3 — Rhythm
+// Chrysalis Canons — Rhythm
 // ============================================================
-// Load after tvp3_signal_flow.scd.
+// Load after signal_flow.scd.
 //
 // Named rhythm sequences referenced by scene via rhythm: \name.
 // Each sequence is an array of steps; each step is an array
@@ -251,7 +251,7 @@
 // Initialise all sequencers silent
 ~silenceRhythm.();
 
-"TVP3 rhythm ready — ~advanceRhythm / ~silenceRhythm".postln;
+"Chrysalis Canons rhythm ready — ~advanceRhythm / ~silenceRhythm".postln;
 
 )
 

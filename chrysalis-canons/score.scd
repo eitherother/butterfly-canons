@@ -1,5 +1,5 @@
 // ============================================================
-// TVP3 — Score
+// Chrysalis Canons — Score
 // ============================================================
 // Each scene has a flows array of exactly 8 elements (nil = inactive).
 // Each flow is a granular voice. Each flow declares its own dial types via dials:.
@@ -33,7 +33,7 @@
 //   release:    0.05          — grain release (seconds); use 0.5 for smooth wash
 //   grainWidth: 0.2           — playback window as buffer fraction; Number/Pattern/[min,max,init]
 //   grainCenterLag: 0.15      — fraction of remaining distance to new grainCenter target
-//                               closed per grain (0-1); 1.0 = instant jump (old behavior),
+//                               closed per grain (0-1); 1.0 = instant jump,
 //                               smaller = slower glide when the counter is bumped
 //   seqDepth:   0.0           — step-sequencer gating depth; Number or [min,max,init]; overridden live by MIDI dial if declared in dials:
 //   tremDepth:  0.0           — tremolo depth; Number or [min,max,init]
@@ -43,6 +43,18 @@
 //   tremRate2:  2.0           — second tremolo rate (Hz)
 //   tremPhase2: 0.0           — second tremolo phase offset (radians, 0–2pi); default 0
 //   rate:       1             — playback rate multiplier
+//   pan:        0             — stereo position (-1..1); \warp flows only, ignored by \granular/\buffer
+//   startOffset: 0            — seconds to wait before the flow starts on scene load
+//   dials:      [\seqDepth, \grainCenter] — the two MIDI dial types for this flow (see conductor.scd)
+//   button:     nil           — Event of Pbind overrides applied while button 2 is active
+//   double:     nil           — array of rate multipliers, one shadow grain stream per entry
+//                               (e.g. [2.0] = octave up); a Pattern scales the main rate instead
+//   doubleAmp:  [0.0, 1.0]    — shadow-stream level (multiplies amp); Number or [min,max,init]
+//   tremSkew:   0.5           — where in the tremolo cycle the peak falls (0-1); Number or [min,max,init]
+//   tremWave:   0.0           — crossfade from sine (0) toward tremTarget shape (1); Number or [min,max,init]
+//   tremTarget: \saw          — \saw | \triangle | \pulse | \revSaw
+//   tremPulseWidth: 0.5       — loud fraction of the cycle when tremTarget is \pulse
+//   (tremSkew2/tremWave2/tremTarget2/tremPulseWidth2 apply to the second tremolo)
 //
 // ---- Step-level params ----
 //   buffers:    (required)    — array of buffer objects (~flt[\G3] etc.)
@@ -55,7 +67,7 @@
 //   delayTime:      0.35      — global delay time (seconds)
 //   delayAmp:       0.0       — delay output level; bring up in performance
 //   delayFeedback:  0.35      — delay feedback (0.0–1.0)
-//   rhythm:         nil       — named sequence from tvp3_rhythm.scd, or nil
+//   rhythm:         nil       — named sequence from rhythm.scd, or nil
 //   layers:         nil       — up to 3 electronic layer entries (nil = inactive slot)
 //   checkpoints:    nil       — array of [fraction, message] pairs; fraction is
 //                               0.0-1.0 of ~grainCenterCounter's 0-127 range.
@@ -76,45 +88,14 @@
 //     ]
 // ============================================================
 
-
-
 (
-~keyToHz = { |key|
-	var noteMap = Dictionary[
-		\C  -> 0,  \Db -> 1,  \D  -> 2,  \Eb -> 3,  \E  -> 4,
-		\F  -> 5,  \Gb -> 6,  \G  -> 7,  \Ab -> 8,  \A  -> 9,
-		\Bb -> 10, \B  -> 11
-	];
-	var str    = key.asString;
-	var octave = str[str.size - 1].digit;
-	var name   = str[0 .. str.size - 2].asSymbol;
-	var midi   = (octave + 1) * 12 + noteMap[name];  // A4=69 → 440Hz
-	midi.midicps
-};
-
 ~bpm = 88;
 ~qn  = 60 / ~bpm;  // seconds per quarter note (period) — used by ~fN durations below
 
-~tn = ~qn;
-
 ~f1 = ~qn;
 ~f2 = ~qn/2;
-~f4 = ~qn/4;
-~f8 = ~qn/8;
-~f3 = ~qn / 3;
-~f6 = ~qn / 6;
-~f9 = ~qn / 9;
-
 
 ~s3qn = 60/88;
-~s3f2 = ~s3qn/2;
-~s3f4 = ~s3qn/4;
-~s3f8 = ~s3qn/8;
-~s3f3 = ~s3qn / 3;
-~s3f6 = ~s3qn / 6;
-~s3f9 = ~s3qn / 9;
-
-
 
 ~score = [
 	// ---- Scene 1 -----------------------------------------------
@@ -184,8 +165,6 @@
 				],
 			),
 
-
-
 			(
 				dials:      [\attack, \doubleAmp],
 				freeze:     true, spectral: true, delay: false,
@@ -197,7 +176,6 @@
 				rate: Pwhite(0.999, 1.001),
 				grainWidth: 1.0, grainCenter: 0.5,
 				doubleAmp: [0.0, 1.0, 0.0], double: [0.5, 1.5],
-				// tremDepth:  [0.0, 1.0, 0.0], tremRate: ~qn*3, tremSkew: 0.5, tremWave: 0.0, tremTarget: \saw,
 				steps: [
 					(buffers: [
 						~marimba[\Bb2], ~marimba[\Bb4], ~marimba[\Bb5], ~vib[\Bb3], ~vib[\Bb4], ~vib[\Bb5],
@@ -251,7 +229,6 @@
 						~marimba[\Eb2], ~marimba[\Eb4], ~marimba[\Eb5], ~vib[\Eb3], ~vib[\Eb5], ~vib[\Eb6],
 						~marimba[\Db2], ~marimba[\Db4], ~marimba[\Db5], ~vib[\Db3], ~vib[\Db4], ~vib[\Db5],
 						~marimba[\C2], ~marimba[\C4], ~marimba[\C5], ~vib[\C3], ~vib[\C4], ~vib[\C5],
-
 
 					], repeats: [1])
 				],
@@ -324,7 +301,6 @@
 				steps: [
 					(buffers: [
 
-
 						~ob[\Bb4], ~ob[\C5], ~ob[\Db5], ~ob[\Eb5], ~ob[\F5], ~ob[\Bb4], ~ob[\C5], ~ob[\Eb5], ~ob[\Db5], ~ob[\C5], ~ob[\C5], ~silence,
 						~ob[\Eb5], ~ob[\F5], ~ob[\Ab5], ~ob[\Ab5],
 						~ob[\Ab5], ~ob[\G5], ~ob[\F5], ~ob[\Eb5], ~ob[\F5], ~ob[\G5], ~ob[\G5], ~ob[\G5], ~silence,
@@ -358,7 +334,6 @@
 					], repeats: [6]),
 				],
 			),
-
 
 		],
 		rhythm: \scene1,
@@ -499,7 +474,6 @@
 						~vibbow[\Db3], ~vibbow[\Db6],
 						~vibbow[\C3], ~vibbow[\C6],
 
-
 					], repeats: [1])
 				],
 			),
@@ -595,7 +569,6 @@
 		rhythm: \scene2,
 	),
 
-
 	// ---- Scene 3 -----------------------------------------------
 	(
 		name: \scene3,
@@ -665,7 +638,6 @@
 
 				],
 			),
-
 
 			(
 				dials:      [\tremDepth, \doubleAmp],

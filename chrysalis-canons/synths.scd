@@ -1,7 +1,7 @@
 // ============================================================
-// TVP3 — SynthDefs
+// Chrysalis Canons — SynthDefs
 // ============================================================
-// Evaluate this entire file before tvp3_signal_flow.scd.
+// Evaluate this entire file before signal_flow.scd.
 //
 // IMPORTANT: all Pbinds using bufferSlice or bufferFragment must
 // pass \freezeBus, ~freezeSendBus explicitly — the default of 0
@@ -214,7 +214,7 @@ SynthDef(\bufferFragment, {
 // stretchScale=1 traverses the whole buffer once per BufDur seconds, i.e.
 // natural/"at speed" playback. Runs as one persistent Synth per flow
 // (started/stopped via gate), not retriggered per grain.
-// Intended for \warp type flows (see ~buildWarpSynth in tvp3_conductor.scd).
+// Intended for \warp type flows (see ~buildWarpSynth in conductor.scd).
 SynthDef(\warpFlow, {
 	|out=0, buf=0,
 	freezeBus=0, freezeSend=0,
@@ -390,6 +390,6 @@ SynthDef(\triTriad, {
 	Out.ar(out, sig.dup * env * amp);
 }).add;
 
-"TVP3 SynthDefs loaded.".postln;
+"Chrysalis Canons SynthDefs loaded.".postln;
 
 )

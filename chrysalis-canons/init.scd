@@ -1,5 +1,5 @@
 // ============================================================
-// TVP3 — Init
+// Chrysalis Canons — Init
 // ============================================================
 // Evaluate the block below once: loads local config, boots the
 // server, loads synths → signal flow → samples (waiting for
@@ -8,7 +8,7 @@
 // post window for "Ready to play." when it's done.
 //
 // Then, whenever you want (performance-time, not init):
-//   ~loadScene.(sceneIndex, chordIndex)   — start/switch a scene
+//   ~loadScene.(sceneIndex, preAdvance)   — start/switch a scene
 //   ~record.(baseName)                    — start recording
 //   ~stopRecording.()                     — stop recording
 // ============================================================
@@ -41,7 +41,7 @@ s.waitForBoot {
 		load(dir +/+ "score.scd");
 		MIDIIn.connectAll;
 		load(dir +/+ "midi.scd");
-		"Ready to play. Evaluate ~loadScene.(sceneIndex, chordIndex) to start.".postln;
+		"Ready to play. Evaluate ~loadScene.(sceneIndex, preAdvance) to start.".postln;
 	};
 };
 )

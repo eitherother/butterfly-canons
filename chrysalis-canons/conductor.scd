@@ -1,9 +1,9 @@
 // ============================================================
-// TVP3 — Conductor
+// Chrysalis Canons — Conductor
 // ============================================================
 // Manages scene state, Pdef construction, and hardware control.
-// Load after tvp3_signal_flow.scd and tvp3_samples.scd.
-// Load ~score (tvp3_score.scd or test score) before calling ~loadScene.
+// Load after signal_flow.scd and samples.scd.
+// Load ~score (score.scd) before calling ~loadScene.
 //
 // Public API:
 //   ~loadScene(index, preAdvance=0) — enter a scene from ~score; preAdvance
@@ -24,7 +24,7 @@
 //   ~checkCheckpoints              — posts any newly-crossed checkpoint messages
 //   ~onHarmonyAdvance              — alias for ~advanceHarmony
 //   ~onSceneAdvance                — advance to next scene (wraps)
-//   ~advanceRhythm                 — step scene's rhythm sequence (defined in tvp3_rhythm.scd)
+//   ~advanceRhythm                 — step scene's rhythm sequence (defined in rhythm.scd)
 //
 // Button 2 score format:
 //   button: (key: value, ...)     — Event of Pbind overrides applied when active
@@ -43,6 +43,10 @@
 //     \doubleAmp   → 4  (Pbind via Pfunc on shadow voices, no .set needed)
 //     \attack      → 5  (Pbind via Pfunc, no .set needed)
 //     \tremDepth2  → 6  (on ~mixers via .set)
+//     \tremSkew    → 7  (on ~mixers via .set)
+//     \tremWave    → 8  (on ~mixers via .set)
+//     \tremSkew2   → 9  (on ~mixers via .set)
+//     \tremWave2   → 10 (on ~mixers via .set)
 //   ~flowDialTypes[fi] stores the two type symbols for each flow.
 //   ~dialTypeToInternalIndex maps type → index.
 //
@@ -239,7 +243,7 @@
 // grainCenter three-mode: Array → dial-mapped Pfunc, else Pfunc reading ~flowDials[2] directly.
 // On scene load, ~flowDials[i][2] is seeded from the first step's grainCenter.
 // grainCenterLag (0-1, default 0.15): fraction of the remaining distance to
-// close per grain; 1.0 = instant jump (old behavior), smaller = slower glide.
+// close per grain; 1.0 = instant jump, smaller = slower glide.
 ~resolveGrainCenter = { |flowIndex, flowDef, step|
     var flowGc = flowDef[\grainCenter];
     var stepGc = step[\grainCenter];
@@ -808,5 +812,5 @@
     }
 };
 
-"TVP3 conductor ready.".postln;
+"Chrysalis Canons conductor ready.".postln;
 )
