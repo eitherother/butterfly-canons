@@ -84,6 +84,18 @@
 
 	~moore = Buffer.read(s, ~sampleLibraryRoot ++ "recordings/It in a Time of Moore.wav");
 
+	~hihat1 = Buffer.read(s, "/Volumes/Samsung_T1/moore/hihat1.mp3");
+	~hihat2 = Buffer.read(s, "/Volumes/Samsung_T1/moore/hihat2.mp3");
+	~kick = Buffer.read(s, "/Volumes/Samsung_T1/moore/kick.mp3");
+	~noise_burst = Buffer.read(s, "/Volumes/Samsung_T1/moore/noise_burst.mp3");
+	~snare = Buffer.read(s, "/Volumes/Samsung_T1/moore/snare.mp3");
+
+	// compound percussion, probably not needed
+	~kick_hihat = Buffer.read(s, "/Volumes/Samsung_T1/moore/kick+hihat.mp3");
+	~kick_snare = Buffer.read(s, "/Volumes/Samsung_T1/moore/kick+snare.mp3");
+	~hihat_snare = Buffer.read(s, "/Volumes/Samsung_T1/moore/hihat+snare.mp3");
+
+
 	PathName(vibFolder).files.do { |file|
 		var noteName = file.fileNameWithoutExtension.split($.).at(2).asSymbol;
 		~vib[noteName] = Buffer.read(s, file.fullPath);
