@@ -76,48 +76,9 @@
 //     ]
 // ============================================================
 
-/*(
-~bpm = 112;
-~qn  = ~bpm / 60;
-~f1 = 0.33*~qn;
-~f2 = 0.11*~qn;
-~f3 = 1.5*0.33*~qn;
-~f4 = 2*~qn;
-~music = ~mephisto;
-~music1 = ~tremoloBuffer.(~music, ~f4, \saw, { |b| "musicTrem ready: %".format(b).postln });
-~music2 = ~tremoloBuffer.(~music, ~f4, \triangle, { |b| "musicTrem ready: %".format(b).postln });
-~music3 = ~tremoloBuffer.(~music, ~f4, \trem, { |b| "musicTrem ready: %".format(b).postln });
-)*/
+
 
 (
-// Renders a tremolo-modulated copy of buf at frequency f (Hz) and returns it
-// immediately (still filling in), or pass action to be notified when it's
-// done rendering. type: \trem (sine), \triangle, \saw, \revSaw, \pulse.
-// Does not modify buf — always allocates and writes to a new buffer.
-~tremoloBuffer = { |buf, f = 4, type = \trem, action|
-	var newBuf = Buffer.alloc(buf.server, buf.numFrames, buf.numChannels);
-	var typeIdx = [\trem, \saw, \triangle, \revSaw, \pulse].indexOf(type) ?? 0;
-	Routine {
-		{
-			var sig    = PlayBuf.ar(buf.numChannels, buf, BufRateScale.kr(buf), loop: 0);
-			var phasor = Phasor.ar(0, f * SampleDur.ir, 0, 1);
-			var shape  = Select.ar(typeIdx, [
-				(phasor * 2pi).sin,             // trem (sine)
-				(phasor * 2 - 1),               // saw
-				1 - ((phasor * 2 - 1).abs * 2), // triangle
-				(phasor * 2 - 1).neg,           // revSaw
-				((phasor < 0.5) * 2) - 1,       // pulse
-			]).range(0, 1);
-			RecordBuf.ar(sig * shape, newBuf, loop: 0, doneAction: 2);
-			Silent.ar;
-		}.play(buf.server);
-		buf.server.sync;
-		(buf.duration + 0.05).wait;
-		action.value(newBuf);
-	}.play;
-	newBuf
-};
-
 ~keyToHz = { |key|
 	var noteMap = Dictionary[
 		\C  -> 0,  \Db -> 1,  \D  -> 2,  \Eb -> 3,  \E  -> 4,
@@ -144,9 +105,6 @@
 ~f6 = ~qn / 6;
 ~f9 = ~qn / 9;
 
-~music = ~in_nomine_6;
-
-
 
 ~s3qn = 60/88;
 ~s3f2 = ~s3qn/2;
@@ -163,11 +121,11 @@
 	(
 		name: \scene1,
 		delayTime: ~f2,
-		stepRate: 12 / ~qn,  // 3 steps/beat (triplet 8ths), locked to ~bpm
+		stepRate: 12 / ~qn,
 		flows: [
 			(
 				dials:      [\tremDepth, \tremDepth2],
-				freeze:     false, spectral: true, delay: false, drive: false,
+				freeze:     false, spectral: true, delay: true,
 				amp:        1.0,
 				dur:        32,
 				pan: -0.4,
@@ -176,9 +134,8 @@
 
 				grainWidth: 1.0, grainCenter: 0.5,
 				seqDepth: [0.0, 1.0, 0.0],
-				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~qn/2, tremSkew: 0.5, tremWave: 0.0, tremTarget: \saw,
-				doubleAmp: [0,1,0], double: [2.0],
-				tremDepth2:  [0.0, 1.0, 0.0], tremRate2: ~qn*3, tremSkew2: 0.5, tremWave2: 1.0, tremTarget2: \saw,
+				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~qn*16, tremSkew: 0.5, tremWave: 1.0, tremTarget: \saw, tremPulseWidth: 0.01,
+				tremDepth2:  [0.0, 1.0, 0.0], tremRate2: ~qn*12, tremSkew2: 0.5, tremWave2: 1.0, tremTarget2: \saw,
 				steps: [
 					(buffers: [
 						~piffaro_1_1
@@ -188,7 +145,7 @@
 			),
 			(
 				dials:      [\tremDepth, \tremDepth2],
-				freeze:     false, spectral: false, delay: false, drive: false,
+				freeze:     false, spectral: false, delay: false,
 				amp:        1.0,
 				dur:        32,
 				pan: -0.2,
@@ -197,9 +154,8 @@
 
 				grainWidth: 1.0, grainCenter: 0.5,
 				seqDepth: [0.0, 1.0, 0.0],
-				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~qn/2.1, tremSkew: 0.5, tremWave: 0.0, tremTarget: \saw,
-				doubleAmp: [0,1,0], double: [2.0],
-				tremDepth2:  [0.0, 1.0, 0.0], tremRate2: ~qn*4, tremSkew2: 0.5, tremWave2: 1.0, tremTarget2: \saw,
+				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~qn*16, tremSkew: 0.5, tremWave: 1.0, tremTarget: \saw,
+				tremDepth2:  [0.0, 1.0, 0.0], tremRate2: ~qn*12, tremSkew2: 0.5, tremWave2: 1.0, tremTarget2: \saw,
 				steps: [
 					(buffers: [
 						~piffaro_1_2
@@ -209,7 +165,7 @@
 			),
 			(
 				dials:      [\tremDepth, \tremDepth2],
-				freeze:     false, spectral: false, delay: false, drive: false,
+				freeze:     false, spectral: false, delay: false,
 				amp:        1.0,
 				dur:        32,
 				pan: 0.2,
@@ -218,9 +174,8 @@
 
 				grainWidth: 1.0, grainCenter: 0.5,
 				seqDepth: [0.0, 1.0, 0.0],
-				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~qn/2.2, tremSkew: 0.5, tremWave: 0.0, tremTarget: \saw,
-				doubleAmp: [0,1,0], double: [2.0],
-				tremDepth2:  [0.0, 1.0, 0.0], tremRate2: ~qn*3 + 0.125, tremSkew2: 0.5, tremWave2: 1.0, tremTarget2: \saw,
+				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~qn*16, tremSkew: 0.5, tremWave: 1.0, tremTarget: \saw,
+				tremDepth2:  [0.0, 1.0, 0.0], tremRate2: ~qn*12, tremSkew2: 0.5, tremWave2: 1.0, tremTarget2: \saw,
 				steps: [
 					(buffers: [
 						~piffaro_1_3
@@ -228,57 +183,109 @@
 
 				],
 			),
-			(
-				dials:      [\tremDepth, \tremDepth2],
-				freeze:     false, spectral: false, delay: false, drive: false,
-				amp:        1.0,
-				dur:        32,
-				pan: 0.4,
-				rate: Pwhite(0.999, 1.001),
-				attack:     0.2, release: 0.2,
 
+
+
+			(
+				dials:      [\attack, \doubleAmp],
+				freeze:     true, spectral: true, delay: false,
+				amp:        2.0,
+				dur:        Pseq([
+					0.001, 0.001, 0.001, 0.001, 0.001, ~qn*15-0.005,
+				], inf),
+				attack:     [0.01, 3.0, 0.01], release: 0.2,
+				rate: Pwhite(0.999, 1.001),
 				grainWidth: 1.0, grainCenter: 0.5,
-				seqDepth: [0.0, 1.0, 0.0],
-				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~qn/2.3, tremSkew: 0.5, tremWave: 0.0, tremTarget: \saw,
-				doubleAmp: [0,1,0], double: [2.0],
-				tremDepth2:  [0.0, 1.0, 0.0], tremRate2: ~qn*3 - 0.125, tremSkew2: 0.5, tremWave2: 1.0, tremTarget2: \saw,
+				doubleAmp: [0.0, 1.0, 0.0], double: [0.5, 1.5],
+				// tremDepth:  [0.0, 1.0, 0.0], tremRate: ~qn*3, tremSkew: 0.5, tremWave: 0.0, tremTarget: \saw,
 				steps: [
 					(buffers: [
-						~piffaro_1_4
-					], repeats: [1]),
+						~marimba[\Bb2], ~marimba[\Bb4], ~marimba[\Bb5], ~vib[\Bb3], ~vib[\Bb4], ~vib[\Bb5],
+						~marimba[\C2], ~marimba[\C4], ~marimba[\C5], ~vib[\C3], ~vib[\C4], ~vib[\C5],
+						~marimba[\Db2], ~marimba[\Db4], ~marimba[\Db5], ~vib[\Db3], ~vib[\Db4], ~vib[\Db5],
+						~marimba[\Eb2], ~marimba[\Eb4], ~marimba[\Eb5], ~vib[\Eb3], ~vib[\Eb5], ~vib[\Eb6],
+						~marimba[\F2], ~marimba[\F4], ~marimba[\F5], ~vib[\F3], ~vib[\F4], ~vib[\F5],
+						~marimba[\Bb2], ~marimba[\Bb4], ~marimba[\Bb5], ~vib[\Bb3], ~vib[\Bb4], ~vib[\Bb5],
+						~marimba[\C2], ~marimba[\C4], ~marimba[\C5], ~vib[\C3], ~vib[\C4], ~vib[\C5],
+						~marimba[\Eb2], ~marimba[\Eb4], ~marimba[\Eb5], ~vib[\Eb3], ~vib[\Eb5], ~vib[\Eb6],
+						~marimba[\Db2], ~marimba[\Db4], ~marimba[\Db5], ~vib[\Db3], ~vib[\Db4], ~vib[\Db5],
+						~marimba[\C2], ~marimba[\C4], ~marimba[\C5], ~vib[\C3], ~vib[\C4], ~vib[\C5],
+						~marimba[\C2], ~marimba[\C4], ~marimba[\C5], ~vib[\C3], ~vib[\C4], ~vib[\C5],
+						~marimba[\Eb2], ~marimba[\Eb4], ~marimba[\Eb5], ~vib[\Eb3], ~vib[\Eb5], ~vib[\Eb6],
+						~marimba[\F2], ~marimba[\F4], ~marimba[\F5], ~vib[\F3], ~vib[\F4], ~vib[\F5],
+						~marimba[\Ab2], ~marimba[\Ab4], ~marimba[\Ab5], ~vib[\Ab3], ~vib[\Ab4], ~vib[\Ab5],
+						~marimba[\Ab2], ~marimba[\Ab4], ~marimba[\Ab5], ~vib[\Ab3], ~vib[\Ab4], ~vib[\Ab5],
+						~marimba[\Ab2], ~marimba[\Ab4], ~marimba[\Ab5], ~vib[\Ab3], ~vib[\Ab4], ~vib[\Ab5],
+						~marimba[\G2], ~marimba[\G4], ~marimba[\G5], ~vib[\G3], ~vib[\G4], ~vib[\G5],
+						~marimba[\F2], ~marimba[\F4], ~marimba[\F5], ~vib[\F3], ~vib[\F4], ~vib[\F5],
+						~marimba[\Eb2], ~marimba[\Eb4], ~marimba[\Eb5], ~vib[\Eb3], ~vib[\Eb5], ~vib[\Eb6],
+						~marimba[\F2], ~marimba[\F4], ~marimba[\F5], ~vib[\F3], ~vib[\F4], ~vib[\F5],
+						~marimba[\G2], ~marimba[\G4], ~marimba[\G5], ~vib[\G3], ~vib[\G4], ~vib[\G5],
+						~marimba[\G2], ~marimba[\G4], ~marimba[\G5], ~vib[\G3], ~vib[\G4], ~vib[\G5],
+						~marimba[\G2], ~marimba[\G4], ~marimba[\G5], ~vib[\G3], ~vib[\G4], ~vib[\G5],
+						~marimba[\F2], ~marimba[\F4], ~marimba[\F5], ~vib[\F3], ~vib[\F4], ~vib[\F5],
+						~marimba[\F2], ~marimba[\F4], ~marimba[\F5], ~vib[\F3], ~vib[\F4], ~vib[\F5],
+						~marimba[\Ab2], ~marimba[\Ab4], ~marimba[\Ab5], ~vib[\Ab3], ~vib[\Ab4], ~vib[\Ab5],
+						~marimba[\Bb2], ~marimba[\Bb4], ~marimba[\Bb5], ~vib[\Bb3], ~vib[\Bb4], ~vib[\Bb5],
+						~marimba[\Ab2], ~marimba[\Ab4], ~marimba[\Ab5], ~vib[\Ab3], ~vib[\Ab4], ~vib[\Ab5],
+						~marimba[\Ab2], ~marimba[\Ab4], ~marimba[\Ab5], ~vib[\Ab3], ~vib[\Ab4], ~vib[\Ab5],
+						~marimba[\G2], ~marimba[\G4], ~marimba[\G5], ~vib[\G3], ~vib[\G4], ~vib[\G5],
+						~marimba[\F2], ~marimba[\F4], ~marimba[\F5], ~vib[\F3], ~vib[\F4], ~vib[\F5],
+						~marimba[\Eb2], ~marimba[\Eb4], ~marimba[\Eb5], ~vib[\Eb3], ~vib[\Eb5], ~vib[\Eb6],
+						~marimba[\F2], ~marimba[\F4], ~marimba[\F5], ~vib[\F3], ~vib[\F4], ~vib[\F5],
+						~marimba[\Eb2], ~marimba[\Eb4], ~marimba[\Eb5], ~vib[\Eb3], ~vib[\Eb5], ~vib[\Eb6],
+						~marimba[\Db2], ~marimba[\Db4], ~marimba[\Db5], ~vib[\Db3], ~vib[\Db4], ~vib[\Db5],
+						~marimba[\C2], ~marimba[\C4], ~marimba[\C5], ~vib[\C3], ~vib[\C4], ~vib[\C5],
+						~marimba[\C2], ~marimba[\C4], ~marimba[\C5], ~vib[\C3], ~vib[\C4], ~vib[\C5],
+						~marimba[\Bb2], ~marimba[\Bb4], ~marimba[\Bb5], ~vib[\Bb3], ~vib[\Bb4], ~vib[\Bb5],
+						~marimba[\Db2], ~marimba[\Db4], ~marimba[\Db5], ~vib[\Db3], ~vib[\Db4], ~vib[\Db5],
+						~marimba[\Eb2], ~marimba[\Eb4], ~marimba[\Eb5], ~vib[\Eb3], ~vib[\Eb5], ~vib[\Eb6],
+						~marimba[\F2], ~marimba[\F4], ~marimba[\F5], ~vib[\F3], ~vib[\F4], ~vib[\F5],
+						~marimba[\Bb2], ~marimba[\Bb4], ~marimba[\Bb5], ~vib[\Bb3], ~vib[\Bb4], ~vib[\Bb5],
+						~marimba[\C2], ~marimba[\C4], ~marimba[\C5], ~vib[\C3], ~vib[\C4], ~vib[\C5],
+						~marimba[\Db2], ~marimba[\Db4], ~marimba[\Db5], ~vib[\Db3], ~vib[\Db4], ~vib[\Db5],
+						~marimba[\Eb2], ~marimba[\Eb4], ~marimba[\Eb5], ~vib[\Eb3], ~vib[\Eb5], ~vib[\Eb6],
+						~marimba[\F2], ~marimba[\F4], ~marimba[\F5], ~vib[\F3], ~vib[\F4], ~vib[\F5],
+						~marimba[\Eb2], ~marimba[\Eb4], ~marimba[\Eb5], ~vib[\Eb3], ~vib[\Eb5], ~vib[\Eb6],
+						~marimba[\Db2], ~marimba[\Db4], ~marimba[\Db5], ~vib[\Db3], ~vib[\Db4], ~vib[\Db5],
+						~marimba[\Eb2], ~marimba[\Eb4], ~marimba[\Eb5], ~vib[\Eb3], ~vib[\Eb5], ~vib[\Eb6],
+						~marimba[\Db2], ~marimba[\Db4], ~marimba[\Db5], ~vib[\Db3], ~vib[\Db4], ~vib[\Db5],
+						~marimba[\C2], ~marimba[\C4], ~marimba[\C5], ~vib[\C3], ~vib[\C4], ~vib[\C5],
 
+
+					], repeats: [1])
 				],
 			),
 
 			(
 				dials:      [\tremDepth, \doubleAmp],
-				freeze:     false, spectral: false, delay: false, drive: false,
+				freeze:     false, spectral: false, delay: false,
 				amp:        1.0,
 				dur:        Pwhite(0.2, 0.4),
 				pan: -0.1,
 				rate: Pwhite(0.999, 1.001),
-				attack:     0.2, release: 0.2,
+				attack:     0.2, release: 0.1,
 
 				grainWidth: Pwhite(0.2, 0.4), grainCenter: 0.25,
 				seqDepth: [0.0, 1.0, 0.0],
 				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~qn*8, tremSkew: 0.5, tremWave: 0.0, tremTarget: \saw,
-				tremDepth2:  [0.0, 1.0, 0.0], tremRate2: ~qn*3, tremSkew: 0.5, tremWave2: 0.0, tremTarget2: \saw,
 
 				doubleAmp: [0,1,0], double: [1.5, 2.25],
 				steps: [
 					(buffers: [
-						~bass[\Bb2],
-						~bass[\C3],
-						~bass[\Db3],
-						~bass[\Eb3],
-						~bass[\F3],
-						~bass[\Bb1],
+
+						~bass[\Bb1], ~bass[\C2], ~bass[\Db2], ~bass[\Eb2], ~bass[\F2], ~bass[\Bb1], ~bass[\C2], ~bass[\Eb2], ~bass[\Db2], ~bass[\C2], ~bass[\C2], ~silence,
+						~bass[\Eb2], ~bass[\F2], ~bass[\Ab2], ~bass[\Ab2],
+						~bass[\Ab2], ~bass[\G2], ~bass[\F2], ~bass[\Eb2], ~bass[\F2], ~bass[\G2], ~bass[\G2], ~bass[\G2], ~silence,
+						~bass[\F2], ~bass[\F2], ~bass[\Ab2], ~bass[\Bb2], ~bass[\Ab2], ~bass[\Ab2], ~bass[\G2], ~bass[\F2], ~bass[\Eb2], ~bass[\F2], ~bass[\Eb2], ~bass[\Db2], ~bass[\C2], ~bass[\C2], ~bass[\Bb1], ~bass[\Db2], ~bass[\Eb2], ~bass[\F2], ~silence,
+						~bass[\Bb1], ~bass[\C2], ~bass[\Db2], ~bass[\Eb2], ~bass[\F2], ~bass[\Eb1], ~bass[\Db2], ~bass[\Eb2], ~bass[\Db2], ~bass[\C2], ~silence,
+
 					], repeats: [16, 8]),
 				],
 			),
 			(
 				dials:      [\tremDepth, \doubleAmp],
-				freeze:     false, spectral: true, delay: true, drive: false,
+				freeze:     false, spectral: true, delay: true,
 				amp:        0.2,
 				dur:        Pwhite(0.2, 0.3),
 				pan: -0.1,
@@ -303,7 +310,7 @@
 
 			(
 				dials:      [\tremDepth, \doubleAmp],
-				freeze:     0.4, spectral: true, delay: false, drive: false,
+				freeze:     0.4, spectral: true, delay: false,
 				amp:        0.2,
 				dur:        Pwhite(0.2, 0.3),
 				pan: -0.1,
@@ -329,7 +336,7 @@
 			),
 			(
 				dials:      [\tremDepth, \doubleAmp],
-				freeze:     false, spectral: false, delay: false, drive: false,
+				freeze:     false, spectral: false, delay: false,
 				amp:        0.2,
 				dur:        Pwhite(0.2, 0.3),
 				pan: -0.1,
@@ -355,35 +362,18 @@
 
 		],
 		rhythm: \scene1,
-		layers: [
-			nil,
-			nil,
-			nil,
-		],
-		checkpoints: [[0.0, "Kyrie"], [0.26, "Christe"], [0.566, "Kyrie"]],
 	),
 
-
-
-
-
-
-
-
-
-
-
-
-
+	// ---- Scene 2 -----------------------------------------------
 	(
 		name: \scene2,
 		delayTime: ~f1,
-		stepRate: 12 / ~qn,  // 3 steps/beat (triplet 8ths), locked to ~bpm
+		stepRate: 10 / ~qn,
 		flows: [
 			(
 				dials:      [\tremDepth, \tremDepth2],
-				freeze:     false, spectral: false, delay: false, drive: false,
-				amp:        0.3,
+				freeze:     false, spectral: false, delay: false,
+				amp:        0.8,
 				dur:        90,
 				pan: -0.4,
 				rate: Pwhite(0.999, 1.001),
@@ -391,7 +381,7 @@
 
 				grainWidth: 1.0, grainCenter: 0.5,
 				seqDepth: [0.0, 1.0, 0.0],
-				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~qn/2, tremSkew: 0.5, tremWave: 0.0, tremTarget: \saw,
+				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~qn*2, tremSkew: 0.5, tremWave: 0.0, tremTarget: \saw,
 				doubleAmp: [0,1,0], double: [2.0],
 				tremDepth2:  [0.0, 1.0, 0.0], tremRate2: ~qn*3, tremSkew2: 0.5, tremWave2: 1.0, tremTarget2: \saw,
 				steps: [
@@ -403,8 +393,8 @@
 			),
 			(
 				dials:      [\tremDepth, \tremDepth2],
-				freeze:     false, spectral: false, delay: false, drive: false,
-				amp:        0.3,
+				freeze:     false, spectral: false, delay: false,
+				amp:        0.8,
 				dur:        90,
 				pan: -0.2,
 				rate: Pwhite(0.999, 1.001),
@@ -412,9 +402,9 @@
 
 				grainWidth: 1.0, grainCenter: 0.5,
 				seqDepth: [0.0, 1.0, 0.0],
-				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~qn/2.1, tremSkew: 0.5, tremWave: 0.0, tremTarget: \saw,
+				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~qn*4, tremSkew: 0.5, tremWave: 0.0, tremTarget: \saw,
 				doubleAmp: [0,1,0], double: [2.0],
-				tremDepth2:  [0.0, 1.0, 0.0], tremRate2: ~qn*4, tremSkew2: 0.5, tremWave2: 1.0, tremTarget2: \saw,
+				tremDepth2:  [0.0, 1.0, 0.0], tremRate2: ~qn*6, tremSkew2: 0.5, tremWave2: 1.0, tremTarget2: \saw,
 				steps: [
 					(buffers: [
 						~piffaro_2_2
@@ -424,8 +414,8 @@
 			),
 			(
 				dials:      [\tremDepth, \tremDepth2],
-				freeze:     false, spectral: false, delay: false, drive: false,
-				amp:        0.3,
+				freeze:     false, spectral: false, delay: false,
+				amp:        0.8,
 				dur:        90,
 				pan: 0.2,
 				rate: Pwhite(0.999, 1.001),
@@ -433,9 +423,9 @@
 
 				grainWidth: 1.0, grainCenter: 0.5,
 				seqDepth: [0.0, 1.0, 0.0],
-				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~qn/2.2, tremSkew: 0.5, tremWave: 0.0, tremTarget: \saw,
+				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~qn*8, tremSkew: 0.5, tremWave: 0.0, tremTarget: \saw,
 				doubleAmp: [0,1,0], double: [2.0],
-				tremDepth2:  [0.0, 1.0, 0.0], tremRate2: ~qn*3 + 0.125, tremSkew2: 0.5, tremWave2: 1.0, tremTarget2: \saw,
+				tremDepth2:  [0.0, 1.0, 0.0], tremRate2: ~qn*9, tremSkew2: 0.5, tremWave2: 1.0, tremTarget2: \saw,
 				steps: [
 					(buffers: [
 						~piffaro_2_3
@@ -443,56 +433,80 @@
 
 				],
 			),
-		/*	(
-				dials:      [\tremDepth, \tremDepth2],
-				freeze:     false, spectral: false, delay: false, drive: false,
-				amp:        0.3,
-				dur:        90,
-				pan: 0.4,
-				rate: Pwhite(0.999, 1.001),
-				attack:     0.2, release: 0.2,
-
-				grainWidth: 1.0, grainCenter: 0.5,
-				seqDepth: [0.0, 1.0, 0.0],
-				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~qn/2.3, tremSkew: 0.5, tremWave: 0.0, tremTarget: \saw,
-				doubleAmp: [0,1,0], double: [2.0],
-				tremDepth2:  [0.0, 1.0, 0.0], tremRate2: ~qn*3 - 0.125, tremSkew2: 0.5, tremWave2: 1.0, tremTarget2: \saw,
-				steps: [
-					(buffers: [
-						~piffaro_2_4
-					], repeats: [1]),
-
-				],
-			),*/
 
 			(
-				dials:      [\tremDepth, \doubleAmp],
-				freeze:     false, spectral: false, delay: false, drive: false,
-				amp:        1.0,
-				dur:        Pwhite(0.2, 0.4),
-				pan: -0.1,
+				dials:      [\attack, \doubleAmp],
+				freeze:     false, spectral: false, delay: false,
+				amp:        0.8,
+				dur:        Pseq([
+					0.001, ~qn*20-0.002,
+				], inf),
+				attack:     [0.01, 0.3, 0.01], release: 0.2,
 				rate: Pwhite(0.999, 1.001),
-				attack:     0.2, release: 0.2,
-
-				grainWidth: Pwhite(0.2, 0.4), grainCenter: 0.25,
-				seqDepth: [0.0, 1.0, 0.0],
-				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~qn*9, tremSkew: 0.5, tremWave: 0.0, tremTarget: \saw,
-				tremDepth2:  [0.0, 1.0, 0.0], tremRate2: ~qn*3, tremSkew: 0.5, tremWave2: 0.0, tremTarget2: \saw,
-
-				doubleAmp: [0,1,0], double: [1.5, 2.25],
+				grainWidth: 1.0, grainCenter: 0.5,
+				doubleAmp: [0.0, 1.0, 0.0], double: [2.0],
 				steps: [
 					(buffers: [
-						~bass[\F2],
-						~bass[\Bb1],
-						~bass[\C2],
-						~bass[\Db2],
-						~bass[\Eb2],
-					], repeats: [16, 8]),
+						~vibbow[\Bb3], ~vibbow[\Bb5],
+						~vibbow[\C3], ~vibbow[\C6],
+						~vibbow[\Db3], ~vibbow[\Db6],
+						~vibbow[\Eb3], ~vibbow[\Eb6],
+						~vibbow[\F3], ~vibbow[\F6],
+						~vibbow[\Bb3], ~vibbow[\Bb5],
+						~vibbow[\C3], ~vibbow[\C6],
+						~vibbow[\Eb3], ~vibbow[\Eb6],
+						~vibbow[\Db3], ~vibbow[\Db6],
+						~vibbow[\C3], ~vibbow[\C6],
+						~vibbow[\C3], ~vibbow[\C6],
+						~vibbow[\Eb3], ~vibbow[\Eb6],
+						~vibbow[\F3], ~vibbow[\F6],
+						~vibbow[\Ab3], ~vibbow[\Ab5],
+						~vibbow[\Ab3], ~vibbow[\Ab5],
+						~vibbow[\Ab3], ~vibbow[\Ab5],
+						~vibbow[\G3], ~vibbow[\G5],
+						~vibbow[\F3], ~vibbow[\F6],
+						~vibbow[\Eb3], ~vibbow[\Eb6],
+						~vibbow[\F3], ~vibbow[\F6],
+						~vibbow[\G3], ~vibbow[\G5],
+						~vibbow[\G3], ~vibbow[\G5],
+						~vibbow[\G3], ~vibbow[\G5],
+						~vibbow[\F3], ~vibbow[\F6],
+						~vibbow[\F3], ~vibbow[\F6],
+						~vibbow[\Ab3], ~vibbow[\Ab5],
+						~vibbow[\Bb3], ~vibbow[\Bb5],
+						~vibbow[\Ab3], ~vibbow[\Ab5],
+						~vibbow[\Ab3], ~vibbow[\Ab5],
+						~vibbow[\G3], ~vibbow[\G5],
+						~vibbow[\F3], ~vibbow[\F6],
+						~vibbow[\Eb3], ~vibbow[\Eb6],
+						~vibbow[\F3], ~vibbow[\F6],
+						~vibbow[\Eb3], ~vibbow[\Eb6],
+						~vibbow[\Db3], ~vibbow[\Db6],
+						~vibbow[\C3], ~vibbow[\C6],
+						~vibbow[\C3], ~vibbow[\C6],
+						~vibbow[\Bb3], ~vibbow[\Bb5],
+						~vibbow[\Db3], ~vibbow[\Db6],
+						~vibbow[\Eb3], ~vibbow[\Eb6],
+						~vibbow[\F3], ~vibbow[\F6],
+						~vibbow[\Bb3], ~vibbow[\Bb5],
+						~vibbow[\C3], ~vibbow[\C6],
+						~vibbow[\Db3], ~vibbow[\Db6],
+						~vibbow[\Eb3], ~vibbow[\Eb6],
+						~vibbow[\F3], ~vibbow[\F6],
+						~vibbow[\Eb3], ~vibbow[\Eb6],
+						~vibbow[\Db3], ~vibbow[\Db6],
+						~vibbow[\Eb3], ~vibbow[\Eb6],
+						~vibbow[\Db3], ~vibbow[\Db6],
+						~vibbow[\C3], ~vibbow[\C6],
+
+
+					], repeats: [1])
 				],
 			),
+
 			(
 				dials:      [\tremDepth, \doubleAmp],
-				freeze:     false, spectral: true, delay: false, drive: false,
+				freeze:     false, spectral: true, delay: false,
 				amp:        0.2,
 				dur:        Pwhite(0.2, 0.3),
 				pan: -0.1,
@@ -516,7 +530,7 @@
 			),
 			(
 				dials:      [\tremDepth, \doubleAmp],
-				freeze:     false, spectral: true, delay: false, drive: false,
+				freeze:     false, spectral: true, delay: false,
 				amp:        0.2,
 				dur:        Pwhite(0.2, 0.3),
 				pan: -0.1,
@@ -541,7 +555,7 @@
 
 			(
 				dials:      [\tremDepth, \doubleAmp],
-				freeze:     3.0, spectral: false, delay: false, drive: false,
+				freeze:     3.0, spectral: false, delay: false,
 				amp:        1.0,
 				dur:        168,
 				pan: -0.1,
@@ -561,8 +575,8 @@
 			(
 				type: \warp,
 				dials:      [\tremDepth, \tremDepth2],
-				freeze:     3.0, spectral: true, delay: false, drive: false,
-				amp:        0.3,
+				freeze:     3.0, spectral: true, delay: true,
+				amp:        1.0,
 				pan: -0.4,
 				pitchScale: 2**(7/12),  // perfect fifth up (equal-tempered)
 				stretchScale: 1.0,
@@ -579,32 +593,19 @@
 
 		],
 		rhythm: \scene2,
-		layers: [
-			nil,
-			nil,
-			nil,
-		],
-		checkpoints: [[0.0, "Kyrie"], [0.26, "Christe"], [0.566, "Kyrie"]],
 	),
 
 
-
-
-
-
-
-
-
-
+	// ---- Scene 3 -----------------------------------------------
 	(
 		name: \scene3,
 		delayTime: 1,
-		stepRate: 12 / ~s3qn,  // 3 steps/beat (triplet 8ths), locked to ~bpm
+		stepRate: 12 / ~s3qn,
 		flows: [
 			(
 				dials:      [\tremDepth, \tremDepth2],
-				freeze:     false, spectral: true, delay: true, drive: false,
-				amp:        0.3,
+				freeze:     false, spectral: true, delay: true,
+				amp:        1.0,
 				dur:        90,
 				pan: -0.4,
 				rate: Pwhite(0.999, 1.001),
@@ -612,7 +613,7 @@
 
 				grainWidth: 1.0, grainCenter: 0.5,
 				seqDepth: [0.0, 1.0, 0.0],
-				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~s3qn/3, tremPhase: 0, tremSkew: 0.5, tremWave: 0.0, tremTarget: \saw,
+				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~s3qn*9, tremPhase: 0, tremSkew: 0.5, tremWave: 0.0, tremTarget: \saw,
 				doubleAmp: [0,1,0], double: [2.0],
 				tremDepth2:  [0.0, 1.0, 0.0], tremRate2: ~qn*3, tremSkew2: 0.5, tremWave2: 1.0, tremTarget2: \saw,
 				steps: [
@@ -624,8 +625,8 @@
 			),
 			(
 				dials:      [\tremDepth, \tremDepth2],
-				freeze:     false, spectral: false, delay: false, drive: false,
-				amp:        0.3,
+				freeze:     false, spectral: false, delay: false,
+				amp:        1.0,
 				dur:        90,
 				pan: -0.4,
 				rate: Pwhite(0.999, 1.001),
@@ -633,9 +634,9 @@
 
 				grainWidth: 1.0, grainCenter: 0.5,
 				seqDepth: [0.0, 1.0, 0.0],
-				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~s3qn/2, tremPhase: 0, tremSkew: 0.5, tremWave: 0.0, tremTarget: \saw,
+				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~s3qn*9, tremPhase: 0, tremSkew: 0.5, tremWave: 0.0, tremTarget: \saw,
 				doubleAmp: [0,1,0], double: [2.0],
-				tremDepth2:  [0.0, 1.0, 0.0], tremRate2: ~qn*4, tremSkew2: 0.5, tremWave2: 1.0, tremTarget2: \saw,
+				tremDepth2:  [0.0, 1.0, 0.0], tremRate2: ~qn*3, tremSkew2: 0.5, tremWave2: 1.0, tremTarget2: \saw,
 				steps: [
 					(buffers: [
 						~piffaro_3_2
@@ -645,8 +646,8 @@
 			),
 			(
 				dials:      [\tremDepth, \tremDepth2],
-				freeze:     false, spectral: false, delay: false, drive: false,
-				amp:        0.3,
+				freeze:     false, spectral: false, delay: false,
+				amp:        1.0,
 				dur:        90,
 				pan: -0.4,
 				rate: Pwhite(0.999, 1.001),
@@ -654,9 +655,9 @@
 
 				grainWidth: 1.0, grainCenter: 0.5,
 				seqDepth: [0.0, 1.0, 0.0],
-				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~s3qn/4, tremPhase: 0, tremSkew: 0.5, tremWave: 0.0, tremTarget: \saw,
+				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~s3qn*9, tremPhase: 0, tremSkew: 0.5, tremWave: 0.0, tremTarget: \saw,
 				doubleAmp: [0,1,0], double: [2.0],
-				tremDepth2:  [0.0, 1.0, 0.0], tremRate2: ~qn*2, tremSkew2: 0.5, tremWave2: 1.0, tremTarget2: \saw,
+				tremDepth2:  [0.0, 1.0, 0.0], tremRate2: ~qn*6, tremSkew2: 0.5, tremWave2: 1.0, tremTarget2: \saw,
 				steps: [
 					(buffers: [
 						~piffaro_3_3
@@ -668,8 +669,8 @@
 
 			(
 				dials:      [\tremDepth, \doubleAmp],
-				freeze:     false, spectral: true, delay: false, drive: false,
-				amp:        2.0,
+				freeze:     false, spectral: true, delay: false,
+				amp:        0.8,
 				dur:        Pwhite(0.2, 0.4),
 				pan: -0.1,
 				rate: Pwhite(0.999, 1.001),
@@ -678,7 +679,6 @@
 				grainWidth: Pwhite(0.2, 0.4), grainCenter: 0.18,
 				seqDepth: [0.0, 1.0, 0.0],
 				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~qn*9, tremSkew: 0.5, tremWave: 0.0, tremTarget: \saw,
-				tremDepth2:  [0.0, 1.0, 0.0], tremRate2: ~qn*3, tremSkew: 0.5, tremWave2: 0.0, tremTarget2: \saw,
 
 				doubleAmp: [0,1,0], double: [1.5, 2.25],
 				steps: [
@@ -689,19 +689,13 @@
 						~bass[\Db2],
 						~bass[\F2],
 						~silence,
-						~bass[\Gb1],
-						~bass[\A1],
-						~bass[\Db1],
-						~bass[\E2],
-						~bass[\Ab2],
-						~silence
-					], repeats: [16, 8]),
+					], repeats: [32, 16, 50, 40]),
 				],
 			),
 
 			(
 				dials:      [\tremDepth, \doubleAmp],
-				freeze:     true, spectral: false, delay: false, drive: false,
+				freeze:     true, spectral: false, delay: false,
 				amp:        0.2,
 				dur:        Pwhite(0.2, 0.3),
 				pan: -0.5,
@@ -724,7 +718,7 @@
 			),
 			(
 				dials:      [\tremDepth, \doubleAmp],
-				freeze:     false, spectral: false, delay: true, drive: false,
+				freeze:     false, spectral: false, delay: true,
 				amp:        0.2,
 				dur:        Pwhite(0.2, 0.3),
 				pan: 0.25,
@@ -748,7 +742,7 @@
 			),
 			(
 				dials:      [\tremDepth, \doubleAmp],
-				freeze:     true, spectral: false, delay: false, drive: false,
+				freeze:     true, spectral: false, delay: false,
 				amp:        0.2,
 				dur:        Pwhite(0.2, 0.3),
 				pan: -0.25,
@@ -761,18 +755,17 @@
 				doubleAmp: [0,1,0], double: [1.5],
 				steps: [
 					(buffers: [
-				~ob[\Bb5], ~ob[\C6], ~ob[\Db6], ~ob[\Eb6], ~ob[\F6], ~ob[\Bb5], ~ob[\C6], ~ob[\Eb6], ~ob[\Db6], ~ob[\C6], ~ob[\C6], ~silence,
-~ob[\Eb6], ~ob[\F6], ~ob[\Ab6], ~ob[\Ab6],
-~ob[\Ab6], ~ob[\G6], ~ob[\F6], ~ob[\Eb6], ~ob[\F6], ~ob[\G6], ~ob[\G6], ~ob[\G6], ~silence,
-~ob[\F6], ~ob[\F6], ~ob[\Ab6], ~flt[\Bb6], ~ob[\Ab6], ~ob[\Ab6], ~ob[\G6], ~ob[\F6], ~ob[\Eb6], ~ob[\F6], ~ob[\Eb6], ~ob[\Db6], ~ob[\C6], ~ob[\C6], ~ob[\Bb5], ~ob[\Db6], ~ob[\Eb6], ~ob[\F6], ~silence,
-~ob[\Bb5], ~ob[\C6], ~ob[\Db6], ~ob[\Eb6], ~ob[\F6], ~ob[\Eb5], ~ob[\Db6], ~ob[\Eb6], ~ob[\Db6], ~ob[\C6], ~silence,
-						// ~ob[\Eb5], ~ob[\Gb5], ~ob[\Bb5], ~ob[\Db6], ~ob[\F6], ~silence
+						~ob[\Bb5], ~ob[\C6], ~ob[\Db6], ~ob[\Eb6], ~ob[\F6], ~ob[\Bb5], ~ob[\C6], ~ob[\Eb6], ~ob[\Db6], ~ob[\C6], ~ob[\C6], ~silence,
+						~ob[\Eb6], ~ob[\F6], ~ob[\Ab6], ~ob[\Ab6],
+						~ob[\Ab6], ~ob[\G6], ~ob[\F6], ~ob[\Eb6], ~ob[\F6], ~ob[\G6], ~ob[\G6], ~ob[\G6], ~silence,
+						~ob[\F6], ~ob[\F6], ~ob[\Ab6], ~flt[\Bb6], ~ob[\Ab6], ~ob[\Ab6], ~ob[\G6], ~ob[\F6], ~ob[\Eb6], ~ob[\F6], ~ob[\Eb6], ~ob[\Db6], ~ob[\C6], ~ob[\C6], ~ob[\Bb5], ~ob[\Db6], ~ob[\Eb6], ~ob[\F6], ~silence,
+						~ob[\Bb5], ~ob[\C6], ~ob[\Db6], ~ob[\Eb6], ~ob[\F6], ~ob[\Eb5], ~ob[\Db6], ~ob[\Eb6], ~ob[\Db6], ~ob[\C6], ~silence,
 					], repeats: [48]),
 				],
 			),
 			(
 				dials:      [\tremDepth, \doubleAmp],
-				freeze:     false, spectral: false, delay: false, drive: false,
+				freeze:     false, spectral: false, delay: false,
 				amp:        0.2,
 				dur:        Pwhite(0.2, 0.3),
 				pan: 0,
@@ -790,24 +783,13 @@
 						~cl[\B6], ~cl[\Bb6], ~cl[\Ab6], ~cl[\Gb6], ~cl[\Ab6], ~cl[\Bb6], ~cl[\Bb6], ~cl[\Bb6], ~silence,
 						~cl[\Ab6], ~cl[\Ab6], ~cl[\B6], ~flt[\Db7], ~cl[\B6], ~cl[\B6], ~cl[\Bb6], ~cl[\Ab6], ~cl[\Gb6], ~cl[\Ab6], ~cl[\Gb6], ~cl[\E6], ~cl[\Eb6], ~cl[\Eb6], ~cl[\Db6], ~cl[\E6], ~cl[\Gb6], ~cl[\Ab6], ~silence,
 						~cl[\Db6], ~cl[\Eb6], ~cl[\E6], ~cl[\Gb6], ~cl[\Ab6], ~cl[\Gb5], ~cl[\E6], ~cl[\Gb6], ~cl[\E6], ~cl[\Eb6], ~silence,
-						// ~cl[\Eb5], ~cl[\Gb5], ~cl[\Bb5], ~cl[\Db6], ~cl[\F6], ~silence
-						// ~flt[\Eb5], ~flt[\Gb5], ~flt[\Bb5], ~flt[\Db6], ~flt[\F6], ~silence
 					], repeats: [24]),
 				],
 			),
 
 		],
 		rhythm: \scene3,
-		layers: [
-			nil,
-			nil,
-			nil,
-		],
-		checkpoints: [[0.0, "Kyrie"], [0.26, "Christe"], [0.566, "Kyrie"]],
 	),
-
-
-
 
 ];
 "Score loaded: % scenes.".format(~score.size).postln;

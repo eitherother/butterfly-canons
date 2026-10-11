@@ -47,7 +47,7 @@ s.waitForBoot {
 )
 
 // ---- Performance-time actions — evaluate individually, whenever -----
-~record.("ChrysalisCanons_");
+~record.("ChrysalisCanons_3_");
 
 ~stopRecording.()
 
