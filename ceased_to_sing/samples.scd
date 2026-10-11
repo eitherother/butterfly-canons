@@ -1,7 +1,3 @@
-
-	~piano = Buffer.read(s, "/Volumes/Samsung_T1/SoundFiles/recordings/forest/ceased_to_sing_piano.mp3");
-~vib[\G6].play
-
 (
 
 ~bass = Dictionary.new;
@@ -19,15 +15,15 @@
 
 	~silence = Buffer.read(s, ~sampleLibraryRoot ++ "silence.wav");
 
-	~footsteps = Buffer.read(s, "/Volumes/Samsung_T1/SoundFiles/recordings/forest/ceased_to_sing_footsteps.mp3");
+	~footsteps = Buffer.read(s, ~sampleLibraryRoot ++ "recordings/forest/ceased_to_sing_footsteps.mp3");
 
-	~piano = Buffer.read(s, "/Volumes/Samsung_T1/SoundFiles/recordings/forest/ceased_to_sing_piano.mp3");
+	~piano = Buffer.read(s, ~sampleLibraryRoot ++ "recordings/forest/ceased_to_sing_piano.mp3");
 
-	~traffic = Buffer.read(s, "/Volumes/Samsung_T1/SoundFiles/recordings/forest/ceased_to_sing_traffic.mp3");
+	~traffic = Buffer.read(s, ~sampleLibraryRoot ++ "recordings/forest/ceased_to_sing_traffic.mp3");
 
-/*	~leaves_1 = Buffer.read(s, "/Volumes/Samsung_T1/SoundFiles/recordings/forest/ceased_to_sing_leaves.mp3", 0);
-	~leaves_2 = Buffer.read(s, "/Volumes/Samsung_T1/SoundFiles/recordings/forest/ceased_to_sing_leaves.mp3", 44100);
-	~leaves_3 = Buffer.read(s, "/Volumes/Samsung_T1/SoundFiles/recordings/forest/ceased_to_sing_leaves.mp3", 44100*2);*/
+/*	~leaves_1 = Buffer.read(s, ~sampleLibraryRoot ++ "recordings/forest/ceased_to_sing_leaves.mp3", 0);
+	~leaves_2 = Buffer.read(s, ~sampleLibraryRoot ++ "recordings/forest/ceased_to_sing_leaves.mp3", 44100);
+	~leaves_3 = Buffer.read(s, ~sampleLibraryRoot ++ "recordings/forest/ceased_to_sing_leaves.mp3", 44100*2);*/
 
 
 	PathName(vibFolder).files.do { |file|
