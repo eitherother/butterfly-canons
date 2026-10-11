@@ -394,6 +394,7 @@
         \attack,     ~resolveAttack.(flowIndex, flowDef),
         \release,    flowDef[\release] ?? 0.05,
         \amp,        flowDef[\amp] ?? 0.08,
+        \pan,        flowDef[\pan] ?? 0,
     ];
     if (b2On) { b2.keysValuesDo { |k, v| pairs = pairs ++ [k.asSymbol, v] } };
     mainPat = if ((step[\double] ?? flowDef[\double]).notNil) {
@@ -444,6 +445,7 @@
         \attack,     0.05,
         \release,    0.05,
         \amp,        flowDef[\amp] ?? 0.08,
+        \pan,        flowDef[\pan] ?? 0,
     ];
     if (b2On) { b2.keysValuesDo { |k, v| pairs = pairs ++ [k.asSymbol, v] } };
     Pdef(pdefName, if (offset > 0) {

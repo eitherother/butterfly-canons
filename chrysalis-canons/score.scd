@@ -43,7 +43,7 @@
 //   tremRate2:  2.0           — second tremolo rate (Hz)
 //   tremPhase2: 0.0           — second tremolo phase offset (radians, 0–2pi); default 0
 //   rate:       1             — playback rate multiplier
-//   pan:        0             — stereo position (-1..1); \warp flows only, ignored by \granular/\buffer
+//   pan:        0             — stereo position (-1..1)
 //   startOffset: 0            — seconds to wait before the flow starts on scene load
 //   dials:      [\seqDepth, \grainCenter] — the two MIDI dial types for this flow (see conductor.scd)
 //   button:     nil           — Event of Pbind overrides applied while button 2 is active
@@ -95,7 +95,6 @@
 ~f1 = ~qn;
 ~f2 = ~qn/2;
 
-~s3qn = 60/88;
 
 ~score = [
 	// ---- Scene 1 -----------------------------------------------
@@ -573,7 +572,7 @@
 	(
 		name: \scene3,
 		delayTime: 1,
-		stepRate: 12 / ~s3qn,
+		stepRate: 12 / ~qn,
 		flows: [
 			(
 				dials:      [\tremDepth, \tremDepth2],
@@ -586,7 +585,7 @@
 
 				grainWidth: 1.0, grainCenter: 0.5,
 				seqDepth: [0.0, 1.0, 0.0],
-				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~s3qn*9, tremPhase: 0, tremSkew: 0.5, tremWave: 0.0, tremTarget: \saw,
+				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~qn*9, tremPhase: 0, tremSkew: 0.5, tremWave: 0.0, tremTarget: \saw,
 				doubleAmp: [0,1,0], double: [2.0],
 				tremDepth2:  [0.0, 1.0, 0.0], tremRate2: ~qn*3, tremSkew2: 0.5, tremWave2: 1.0, tremTarget2: \saw,
 				steps: [
@@ -607,7 +606,7 @@
 
 				grainWidth: 1.0, grainCenter: 0.5,
 				seqDepth: [0.0, 1.0, 0.0],
-				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~s3qn*9, tremPhase: 0, tremSkew: 0.5, tremWave: 0.0, tremTarget: \saw,
+				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~qn*9, tremPhase: 0, tremSkew: 0.5, tremWave: 0.0, tremTarget: \saw,
 				doubleAmp: [0,1,0], double: [2.0],
 				tremDepth2:  [0.0, 1.0, 0.0], tremRate2: ~qn*3, tremSkew2: 0.5, tremWave2: 1.0, tremTarget2: \saw,
 				steps: [
@@ -628,7 +627,7 @@
 
 				grainWidth: 1.0, grainCenter: 0.5,
 				seqDepth: [0.0, 1.0, 0.0],
-				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~s3qn*9, tremPhase: 0, tremSkew: 0.5, tremWave: 0.0, tremTarget: \saw,
+				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~qn*9, tremPhase: 0, tremSkew: 0.5, tremWave: 0.0, tremTarget: \saw,
 				doubleAmp: [0,1,0], double: [2.0],
 				tremDepth2:  [0.0, 1.0, 0.0], tremRate2: ~qn*6, tremSkew2: 0.5, tremWave2: 1.0, tremTarget2: \saw,
 				steps: [
@@ -676,7 +675,7 @@
 
 				grainWidth: Pwhite(0.3, 0.4), grainCenter: 0.25,
 				seqDepth: [0.0, 1.0, 0.0],
-				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~s3qn*16, tremSkew: 0.5, tremPhase: pi/2, tremWave: 0.0, tremTarget: \saw,
+				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~qn*16, tremSkew: 0.5, tremPhase: pi/2, tremWave: 0.0, tremTarget: \saw,
 				doubleAmp: [0,1,0], double: [1.5],
 				steps: [
 					(buffers: [
@@ -699,7 +698,7 @@
 
 				grainWidth: Pwhite(0.3, 0.4), grainCenter: 0.25,
 				seqDepth: [0.0, 1.0, 0.0],
-				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~s3qn*8, tremSkew: 0.5, tremPhase: 0, tremWave: 0.0, tremTarget: \saw,
+				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~qn*8, tremSkew: 0.5, tremPhase: 0, tremWave: 0.0, tremTarget: \saw,
 				doubleAmp: [0,1,0], double: [5/3],
 				steps: [
 					(buffers: [
@@ -723,7 +722,7 @@
 
 				grainWidth: Pwhite(0.3, 0.4), grainCenter: 0.25,
 				seqDepth: [0.0, 1.0, 0.0],
-				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~s3qn*6, tremSkew: 0.5, tremPhase: pi, tremWave: 0.0, tremTarget: \saw,
+				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~qn*6, tremSkew: 0.5, tremPhase: pi, tremWave: 0.0, tremTarget: \saw,
 				doubleAmp: [0,1,0], double: [1.5],
 				steps: [
 					(buffers: [
@@ -746,7 +745,7 @@
 
 				grainWidth: Pwhite(0.3, 0.4), grainCenter: 0.25,
 				seqDepth: [0.0, 1.0, 0.0],
-				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~s3qn*12, tremSkew: 0.5, tremPhase: 3*pi/2, tremWave: 0.0, tremTarget: \saw,
+				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~qn*12, tremSkew: 0.5, tremPhase: 3*pi/2, tremWave: 0.0, tremTarget: \saw,
 				doubleAmp: [0,1,0], double: [1.5],
 				steps: [
 					(buffers: [

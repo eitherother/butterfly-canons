@@ -202,7 +202,7 @@ SynthDef(\bufferFragment, {
 		Env.linen(attack, (playDur - attack - release).max(0.001), release),
 		doneAction: 2
 	);
-	sig  = sig * env;
+	sig  = Balance2.ar(sig[0], sig[1], pan) * env;
 	send = Limiter.ar(LeakDC.ar(sig * freezeSend), 0.7);
 	Out.ar(freezeBus,   send);
 	Out.ar(spectralBus, sig * spectralSend);
