@@ -1,15 +1,15 @@
 // ============================================================
-// TVP3 — Signal Flow
+// Chrysalis Canons — Signal Flow
 // ============================================================
-// Load order: tvp3_synths → tvp3_signal_flow → tvp3_samples
+// Load order: synths → signal_flow → samples
 //
-// SynthDefs required from tvp3_synths.scd:
-//   \stepSeqBufSwap  — step sequencer (same as tvp2)
-//   \layerMixer      — simple amp + lag (same as tvp2)
-//   \flowMixer       — layerMixerTrem (tvp3 version)
-//   \freezeLike      — freeze processor (same as tvp2)
-//   \globalDelay     — delay send processor (new)
-//   \spectralSend    — spectral reverb + blur send (new)
+// SynthDefs required from synths.scd:
+//   \stepSeqBufSwap  — step sequencer
+//   \layerMixer      — simple amp + lag
+//   \flowMixer       — per-flow mixer with dual tremolo
+//   \freezeLike      — freeze processor
+//   \globalDelay     — delay send processor
+//   \spectralSend    — spectral reverb + blur send
 //   \masterChain     — LPF + reverb → output (new, replaces masterReverb)
 // ============================================================
 
@@ -156,7 +156,7 @@ s.sync;  // wait for Buffer.alloc to complete before creating synths
 	\lag,     3,
 ]);
 
-"TVP3 signal flow ready.".postln;
+"Chrysalis Canons signal flow ready.".postln;
 
 } // end fork
 )

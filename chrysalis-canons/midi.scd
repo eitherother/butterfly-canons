@@ -1,7 +1,7 @@
 // ============================================================
-// TVP3 — MIDI (Novation Launch Control XL)
+// Chrysalis Canons — MIDI (Novation Launch Control XL)
 // ============================================================
-// Load after tvp3_conductor.scd and tvp3_rhythm.scd.
+// Load after conductor.scd and rhythm.scd.
 //
 // Novation XL CC layout:
 //   Dial row 1 (top): CC 13–20
@@ -122,12 +122,3 @@ MIDIdef.cc(\g_layer3,  { |val| if (val > 0) { ~onLayerToggle.(2) } },      52, c
 ~masterChain.set(\blend, 0.0);
 ~sendFeedback.();
 )
-
-
-// --- Scene advance ('n' key) ---------------------------------
-/*(
-~sceneWin = Window("n → next scene", Rect(10, 10, 180, 36)).front;
-~sceneWin.view.keyDownAction = { |v, char|
-    if (char == $n) { ~onSceneAdvance.(); "→ scene %".format(~currentScene).postln }
-};
-)*/
