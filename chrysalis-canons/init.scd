@@ -51,4 +51,4 @@ s.waitForBoot {
 
 ~stopRecording.()
 
-~loadScene.(2, 0);
+~loadScene.(0, 0);

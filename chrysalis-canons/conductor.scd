@@ -30,7 +30,7 @@
 //   button: (key: value, ...)     — Event of Pbind overrides applied when active
 //   e.g.  button: (rate: Pwhite(0.75, 1.33))
 //         button: (centerPos: Pwhite(0.1, 0.9), grainWidth: 0.02)
-//   Any \bufferSliceML or \bufferFragment arg can be overridden.
+//   Any \bufferSliceML arg can be overridden.
 //
 // Plugin dial system (per flow):
 //   Each flow declares dials: [\type1, \type2] in the score.
@@ -52,7 +52,6 @@
 //
 // Flow types (flowDef[\type], default \granular):
 //   \granular — Pbind-driven grain stream (~buildGranularPdef)
-//   \buffer   — Pbind-driven single buffer playback (~buildBufferPdef)
 //   \warp     — persistent Warp1 Synth, not Pbind-driven (~buildWarpSynth).
 //               flowDef[\pitchScale]/[\stretchScale] (plain Numbers, fixed —
 //               no dial control) set playback pitch and buffer-traversal
@@ -425,34 +424,6 @@
     } { mainPat })
 };
 
-~buildBufferPdef = { |flowIndex, flowDef, stepIndex, withOffset = false|
-    var step, b2, b2On, pdefName, pairs, offset;
-    step     = flowDef[\steps][stepIndex];
-    b2       = flowDef[\button];
-    b2On     = ~buttonActive[flowIndex] && b2.notNil;
-    pdefName = ("flow" ++ flowIndex).asSymbol;
-    offset   = if (withOffset) { flowDef[\startOffset] ?? 0 } { 0 };
-    pairs    = [
-        \instrument,  \bufferFragment,
-        \group,       ~flowGroup,
-        \out,         ~flowBus[flowIndex],
-        \freezeBus,   ~freezeSendBus,
-        \freezeSend,  if (flowDef[\freeze].isKindOf(Number)) { flowDef[\freeze] } { (flowDef[\freeze] ? false).if(1, 0) },
-        \spectralBus, ~spectralSendBus,
-        \spectralSend,(flowDef[\spectral] ? false).if(1, 0),
-        \buf,         ~buildBufSeq.(step),
-        \dur,        ~resolveDur.(flowIndex, flowDef, 2.0),
-        \attack,     0.05,
-        \release,    0.05,
-        \amp,        flowDef[\amp] ?? 0.08,
-        \pan,        flowDef[\pan] ?? 0,
-    ];
-    if (b2On) { b2.keysValuesDo { |k, v| pairs = pairs ++ [k.asSymbol, v] } };
-    Pdef(pdefName, if (offset > 0) {
-        Pseq([Pbind(\type, \rest, \dur, Pn(offset, 1)), Pbind(*pairs)], 1)
-    } { Pbind(*pairs) })
-};
-
 // Persistent per-flow Synth for \warp-type flows — not Pbind/Pdef-driven.
 // pitchScale/stretchScale are fixed Numbers (no dial resolution needed).
 ~buildWarpSynth = { |flowIndex, flowDef, stepIndex|
@@ -475,10 +446,11 @@
 };
 
 ~buildFlowPdef = { |flowIndex, flowDef, stepIndex, withOffset = false|
-    case
-    { (flowDef[\type] ?? \granular) == \granular } { ~buildGranularPdef.(flowIndex, flowDef, stepIndex, withOffset) }
-    { flowDef[\type] == \warp } { ~buildWarpSynth.(flowIndex, flowDef, stepIndex) }
-    { ~buildBufferPdef.(flowIndex, flowDef, stepIndex, withOffset) }
+    if (flowDef[\type] == \warp) {
+        ~buildWarpSynth.(flowIndex, flowDef, stepIndex)
+    } {
+        ~buildGranularPdef.(flowIndex, flowDef, stepIndex, withOffset)
+    }
 };
 
 

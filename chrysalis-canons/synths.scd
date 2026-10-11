@@ -3,7 +3,7 @@
 // ============================================================
 // Evaluate this entire file before signal_flow.scd.
 //
-// IMPORTANT: all Pbinds using bufferSlice or bufferFragment must
+// IMPORTANT: all Pbinds using bufferSliceML must
 // pass \freezeBus, ~freezeSendBus explicitly — the default of 0
 // routes audio to hardware output.
 //
@@ -111,49 +111,6 @@ SynthDef(\flowMixer, {
 // ============================================================
 
 
-// PlayBuf-based slice — plays a region of a buffer as a timed event
-// startPos/endPos: normalized 0-1 positions in buffer
-// grainDur > 0 overrides the natural duration (useful for dense grain streams)
-// dissolve: pitch smear applied to the freeze send only
-// IMPORTANT: always pass \freezeBus, ~freezeSendBus in Pbinds
-SynthDef(\bufferSlice, {
-	|out=0, buf=0,
-	freezeBus=0, freezeSend=0,
-	startPos=0.0, endPos=1.0,
-	sendLPF=5500,
-	attack=0.5, release=0.5,
-	rate=1, dissolve=0,
-	amp=0.08, pan=0,
-	loop=0, grainDur=0|
-	var frames, startFrame, endFrame, bufDur, playDur;
-	var sig, env, send;
-	frames     = BufFrames.kr(buf);
-	startFrame = startPos * frames;
-	endFrame   = endPos * frames;
-	bufDur     = ((endFrame - startFrame) / BufSampleRate.kr(buf)) / rate.abs;
-	playDur    = Select.kr(grainDur > 0, [bufDur, grainDur]);
-	sig = PlayBuf.ar(2, buf, BufRateScale.kr(buf) * rate, startPos: startFrame, loop: loop);
-	env = EnvGen.kr(
-		Env.linen(attack, (playDur - attack - release).max(0.001), release),
-		doneAction: 2
-	);
-	sig  = sig * env;
-	sig  = Balance2.ar(sig[0], sig[1], pan);
-	send = sig * freezeSend;
-	send = BHiShelf.ar(send, 700, 0.7, -5);
-	send = BLowShelf.ar(send, 250, 0.7, -8);
-	send = PitchShift.ar(
-		send,
-		0.2,
-		LFNoise1.kr(0.25 ! 2).range(1 - (dissolve * 0.012), 1 + (dissolve * 0.012)),
-		dissolve * 0.025,
-		dissolve * 0.01
-	);
-	send = Limiter.ar(LeakDC.ar(LPF.ar(send, sendLPF)), 0.7);
-	Out.ar(out, sig * amp);
-	Out.ar(freezeBus, send);
-}).add;
-
 // PlayBuf-based grain — plays [centerPos - grainWidth/2, centerPos + grainWidth/2]
 // grainWidth is a buffer fraction (0.0–1.0); position and duration are both derived from it
 // freezeSend=1 routes to freezeBus; 0 suppresses (for flows with freeze: false)
@@ -178,35 +135,6 @@ SynthDef(\bufferSliceML, {
 	Out.ar(out, sig * amp);
 	Out.ar(freezeBus,   sig * freezeSend);
 	Out.ar(spectralBus, sig * spectralSend);
-}).add;
-
-// Non-granular buffer playback — plays buffer straight through on a \dur pattern
-// Intended for \buffer type flows: piano hits, longer samples, voiced events
-// Mixed downstream by \flowMixer (tremolo + amp).
-SynthDef(\bufferFragment, {
-	|out=0, buf=0,
-	freezeBus=0, freezeSend=0,
-	spectralBus=0, spectralSend=0,
-	startPos=0.0, endPos=1.0,
-	attack=0.05, release=0.05,
-	rate=1,
-	amp=0.08, pan=0|
-	var frames, startFrame, endFrame, playDur;
-	var sig, env, send;
-	frames     = BufFrames.kr(buf);
-	startFrame = startPos * frames;
-	endFrame   = endPos * frames;
-	playDur    = ((endFrame - startFrame) / (BufSampleRate.kr(buf) * rate.abs));
-	sig = PlayBuf.ar(2, buf, BufRateScale.kr(buf) * rate, startPos: startFrame, loop: 0, doneAction: 0);
-	env = EnvGen.kr(
-		Env.linen(attack, (playDur - attack - release).max(0.001), release),
-		doneAction: 2
-	);
-	sig  = Balance2.ar(sig[0], sig[1], pan) * env;
-	send = Limiter.ar(LeakDC.ar(sig * freezeSend), 0.7);
-	Out.ar(freezeBus,   send);
-	Out.ar(spectralBus, sig * spectralSend);
-	Out.ar(out, sig * amp);
 }).add;
 
 // Warp1-based continuous playback — reads buf on its own looping pointer,
@@ -274,27 +202,6 @@ SynthDef(\freezeLike, {
 	Out.ar(out, sig * amp);
 }).add;
 
-// Freeze send processor — shapes audio before it enters the freezer
-// Separate from freezeLike so the freeze send can be processed independently
-SynthDef(\freezeProcessor, {
-	|inBus, out=0, amp=0.5, dissolve=0, sendLPF=8000, lag=3|
-	var sig;
-	sig = In.ar(inBus, 2);
-	sig = BHiShelf.ar(sig, 700, 0.7, -5);
-	sig = BLowShelf.ar(sig, 250, 0.7, -8);
-	sig = PitchShift.ar(
-		sig, 0.2,
-		LFNoise1.kr(0.25 ! 2).range(
-			1 - (Lag.kr(dissolve, lag) * 0.012),
-			1 + (Lag.kr(dissolve, lag) * 0.012)
-		),
-		Lag.kr(dissolve, lag) * 0.025,
-		Lag.kr(dissolve, lag) * 0.01
-	);
-	sig = Limiter.ar(LeakDC.ar(LPF.ar(sig, Lag.kr(sendLPF, lag))), 0.7);
-	Out.ar(out, sig * Lag.kr(amp, lag));
-}).add;
-
 
 // ============================================================
 // GLOBAL SENDS
@@ -313,11 +220,6 @@ SynthDef(\globalDelay, {
 	delayed = Limiter.ar(delayed, 0.9);
 	LocalOut.ar(delayed);
 	Out.ar(out, delayed * Lag.kr(amp, lag));
-}).add;
-
-// Copies a stereo bus to another bus — used to tap ~masterBus → ~spectralSendBus.
-SynthDef(\spectralTap, { |inBus, outBus|
-	Out.ar(outBus, In.ar(inBus, 2))
 }).add;
 
 // Send-effect topology: adds WET signal only (dry already lives in ~masterBus).

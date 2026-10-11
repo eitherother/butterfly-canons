@@ -4,8 +4,8 @@
 // Each scene has a flows array of exactly 8 elements (nil = inactive).
 // Each flow is a granular voice. Each flow declares its own dial types via dials:.
 //
-// ---- Flow type: type: \granular (default) | \buffer | \warp ----
-//   \granular/\buffer are Pbind-driven — see the granular/buffer params below.
+// ---- Flow type: type: \granular (default) | \warp ----
+//   \granular is Pbind-driven — see the flow params below.
 //   \warp is a persistent Synth (Warp1), not Pbind-driven: it continuously
 //   loops through steps[0]'s single buffer. Its own params (replace
 //   grainWidth/grainCenter/dur/attack/etc — those are ignored):
