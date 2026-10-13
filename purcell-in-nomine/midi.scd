@@ -1,7 +1,7 @@
 // ============================================================
 // TVP3 — MIDI (Novation Launch Control XL)
 // ============================================================
-// Load after tvp3_conductor.scd and tvp3_rhythm.scd.
+// Load after conductor.scd and rhythm.scd.
 //
 // Novation XL CC layout:
 //   Dial row 1 (top): CC 13–20
@@ -46,6 +46,8 @@
 
 // --- MIDI output, global state, and feedback -----------------
 (
+var chan = 0;
+
 ~feedbackChan = 0;   // XL receive channel (0-indexed); LCXL3 uses channel 0
 ~lcxl         = nil;
 ~lcxl = MIDIOut.newByName("LCXL3 1", "MIDI In"); ~lcxl.latency = 0;
@@ -83,12 +85,9 @@
         };
     };
 };
-)
 
 
 // --- MIDI input handlers -------------------------------------
-(
-var chan = 0;
 // Top row: global dials (CC 13–20) — absolute 0–127, normalised to 0–1 for global state
 MIDIdef.cc(\g_freeze,     { |val| ~gFreeze    = val/127; ~freezeMixer.set(\amp, ~gFreeze) },                    13, chan);
 MIDIdef.cc(\g_shimmer,    { |val| ~gShimmer   = val/127; ~freezer.set(\shimmer, ~gShimmer) },                     14, chan);
@@ -125,16 +124,3 @@ MIDIdef.cc(\g_layer3,  { |val| if (val > 0) { ~onLayerToggle.(2) } },      52, c
 ~masterChain.set(\blend, 0.0);
 ~sendFeedback.();
 )
-
-
-// --- Scene advance ('n' key) ---------------------------------
-/*(
-~sceneWin = Window("n → next scene", Rect(10, 10, 180, 36)).front;
-~sceneWin.view.keyDownAction = { |v, char|
-    if (char == $n) { ~onSceneAdvance.(); "→ scene %".format(~currentScene).postln }
-};
-)*/
-
-
-// --- Teardown ------------------------------------------------
-MIDIdef.freeAll;

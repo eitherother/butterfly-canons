@@ -38,10 +38,10 @@
 ~pnpp.keys;
 */
 
-~in_nomine_60 = Buffer.read(s, "/Volumes/Samsung_T1/SoundFiles/recordings/purcell_in_nomine_6.wav", 0);
-~in_nomine_61 = Buffer.read(s, "/Volumes/Samsung_T1/SoundFiles/recordings/purcell_in_nomine_6.wav", 22040*2);
-~in_nomine_62 = Buffer.read(s, "/Volumes/Samsung_T1/SoundFiles/recordings/purcell_in_nomine_6.wav", 44100*2);
-~in_nomine_63 = Buffer.read(s, "/Volumes/Samsung_T1/SoundFiles/recordings/purcell_in_nomine_6.wav", 66140*2);
+~in_nomine_60 = Buffer.read(s, ~sampleLibraryRoot ++ "recordings/purcell_in_nomine_6.wav", 0);
+~in_nomine_61 = Buffer.read(s, ~sampleLibraryRoot ++ "recordings/purcell_in_nomine_6.wav", 22040*2);
+~in_nomine_62 = Buffer.read(s, ~sampleLibraryRoot ++ "recordings/purcell_in_nomine_6.wav", 44100*2);
+~in_nomine_63 = Buffer.read(s, ~sampleLibraryRoot ++ "recordings/purcell_in_nomine_6.wav", 66140*2);
 
 
 
@@ -99,29 +99,34 @@
 ~vib = Dictionary.new;
 
 
-~load_samples = Routine {
-	var pnffFolder    = "/Volumes/Samsung_T1/SoundFiles/pnff/";
-	var pnmfFolder    = "/Volumes/Samsung_T1/SoundFiles/pnmf/";
-	var pnppFolder    = "/Volumes/Samsung_T1/SoundFiles/pnpp/";
-	var clFolder     = "/Volumes/Samsung_T1/SoundFiles/Clarinet/post2012/";
-	var fltFolder    = "/Volumes/Samsung_T1/SoundFiles/Flute/";
-	var oboeFolder   = "/Volumes/Samsung_T1/SoundFiles/Oboe/";
-	var bassoonFolder = "/Volumes/Samsung_T1/SoundFiles/Bassoon/";
-	var bassfltFolder = "/Volumes/Samsung_T1/SoundFiles/BassFlute";
-	var marimbafolder = "/Volumes/Samsung_T1/SoundFiles/Marimba.cord.ff.stereo/";
-	var vibFolder = "/Volumes/Samsung_T1/SoundFiles/Vibraphone.bow.stereo/";
+// Signaled once loading finishes — init.scd waits on this instead of
+// s.sync, since buffer loading runs in its own Routine (~load_samples),
+// independent of whatever fork/routine called load() on this file.
+~buffersLoaded = Condition.new;
 
-	~silence = Buffer.read(s, "/Volumes/Samsung_T1/SoundFiles/silence.wav");
-	// ~mephisto1 = Buffer.read(s, "/Volumes/Samsung_T1/SoundFiles/recordings/mephisto_tuning.wav");
-	// ~mephisto2 = Buffer.read(s, "/Volumes/Samsung_T1/SoundFiles/recordings/mephisto_part2.wav");
-	// ~mephisto3 = Buffer.read(s, "/Volumes/Samsung_T1/SoundFiles/recordings/mephisto_laughs.wav");
+~load_samples = Routine {
+	var pnffFolder    = ~sampleLibraryRoot ++ "pnff/";
+	var pnmfFolder    = ~sampleLibraryRoot ++ "pnmf/";
+	var pnppFolder    = ~sampleLibraryRoot ++ "pnpp/";
+	var clFolder     = ~sampleLibraryRoot ++ "Clarinet/post2012/";
+	var fltFolder    = ~sampleLibraryRoot ++ "Flute/";
+	var oboeFolder   = ~sampleLibraryRoot ++ "Oboe/";
+	var bassoonFolder = ~sampleLibraryRoot ++ "Bassoon/";
+	var bassfltFolder = ~sampleLibraryRoot ++ "BassFlute";
+	var marimbafolder = ~sampleLibraryRoot ++ "Marimba.cord.ff.stereo/";
+	var vibFolder = ~sampleLibraryRoot ++ "Vibraphone.bow.stereo/";
+
+	~silence = Buffer.read(s, ~sampleLibraryRoot ++ "silence.wav");
+	// ~mephisto1 = Buffer.read(s, ~sampleLibraryRoot ++ "recordings/mephisto_tuning.wav");
+	// ~mephisto2 = Buffer.read(s, ~sampleLibraryRoot ++ "recordings/mephisto_part2.wav");
+	// ~mephisto3 = Buffer.read(s, ~sampleLibraryRoot ++ "recordings/mephisto_laughs.wav");
 ~door = Buffer.read(s, "/Volumes/Samsung_T1/BBC SFX DISCS/BBC Sound Effects Library/BBC Sound FX [Disc 1]/1-36 Destruction, Wooden Door.wav");
 	~brick = Buffer.read(s, "/Volumes/Samsung_T1/BBC SFX DISCS/BBC Sound Effects Library/BBC Sound FX [Disc 1]/1-37 Destruction, Brick Wall.wav");
 
-	~shatter = Buffer.read(s, "/Volumes/Samsung_T1/SoundFiles/recordings/shatter.wav");
+	~shatter = Buffer.read(s, ~sampleLibraryRoot ++ "recordings/shatter.wav");
 	~fireworks1 = Buffer.read(s, "/Volumes/Samsung_T1/BBC SFX DISCS/BBC Sound Effects Library/BBC Sound FX [Disc 18]/01 Fireworks, Chrysanthemum Fountain (Fizz).wav");
 
-	~dialect1 = Buffer.read(s, "/Volumes/Samsung_T1/SoundFiles/recordings/dialect_minnesota.wav");
+	~dialect1 = Buffer.read(s, ~sampleLibraryRoot ++ "recordings/dialect_minnesota.wav");
 	// ~traffic = Buffer.read(s, "/Volumes/Samsung_T1/BBC SFX DISCS/BBC Sound Effects Library/Sound Effects - Exterior Atmosphere/2-08 City Traffic.wav");
 
 	~woodlands = Buffer.read(s, "/Volumes/Samsung_T1/BBC SFX DISCS/BBC Sound Effects Library/Sound Effects - Exterior Atmosphere/2-12 Woodland Atmosphere (Mixed Deciduous) On A Windy Day (Occasional Flying Insect).wav");
@@ -131,15 +136,15 @@
 	~train = Buffer.read(s, "/Volumes/Samsung_T1/BBC SFX DISCS/BBC Sound Effects Library/BBC Sound FX [[Disc 4]]/4-02 Main Line Railway Station, Footsteps, Voices, Trolleys, Destination Indicators And PA Announcements.wav");
 	~trucks = Buffer.read(s, "/Volumes/Samsung_T1/BBC SFX DISCS/BBC Sound Effects Library/BBC Sound FX [Disc 18]/20 Quarrying, Dumper Tricks - 3 Start Up And Depart.wav");
 
-	// ~mass_kyrie = Buffer.read(s, "/Volumes/Samsung_T1/SoundFiles/recordings/byrd_kyrie_mass_for_4.mp3");
-	// ~mass_gloria = Buffer.read(s, "/Volumes/Samsung_T1/SoundFiles/recordings/byrd_gloria.mp3");
+	// ~mass_kyrie = Buffer.read(s, ~sampleLibraryRoot ++ "recordings/byrd_kyrie_mass_for_4.mp3");
+	// ~mass_gloria = Buffer.read(s, ~sampleLibraryRoot ++ "recordings/byrd_gloria.mp3");
 
 	~lorry = Buffer.read(s, "/Volumes/Samsung_T1/BBC SFX DISCS/BBC Sound Effects Library/BBC Sound FX [Disc 5]/5-01 Diesel Lorry, 10-Ton, Interior, Start-Up, Constant Run, Stop.wav");
 
 	~motorcycle = Buffer.read(s, "/Volumes/Samsung_T1/BBC SFX DISCS/BBC Sound Effects Library/BBC Sound FX [Disc 5]/5-05 Motorcycle, BMW, Start-Up, Constant Run, Stop.wav");
 
-	~whales = Buffer.read(s, "/Volumes/Samsung_T1/SoundFiles/recordings/whales.wav");
-~in_nomine_6 = Buffer.read(s, "/Volumes/Samsung_T1/SoundFiles/recordings/purcell_in_nomine_6.wav");
+	~whales = Buffer.read(s, ~sampleLibraryRoot ++ "recordings/whales.wav");
+~in_nomine_6 = Buffer.read(s, ~sampleLibraryRoot ++ "recordings/purcell_in_nomine_6.wav");
 
 /*	PathName(marimbafolder).files.do { |file|
 		var noteName = file.fileNameWithoutExtension.split($.).at(3).asSymbol;
@@ -191,67 +196,67 @@
 		~bsn[noteName] = Buffer.read(s, file.fullPath);
 	};*/
 
-	~whale1 = Buffer.readChannel(s, "/Volumes/Samsung_T1/SoundFiles/recordings/whale-sounds/whale-sounds-wav/killer-whale-orcinus-orca.wav", channels: [0, 0]);
-	~whale2 = Buffer.readChannel(s, "/Volumes/Samsung_T1/SoundFiles/recordings/whale-sounds/whale-sounds-wav/humpback-whale-megaptera-novaeangliae.wav", channels: [0, 0]);
-	~whale3 = Buffer.readChannel(s, "/Volumes/Samsung_T1/SoundFiles/recordings/whale-sounds/whale-sounds-wav/minke-whale-balaenoptera-acutorostrata.wav", channels: [0, 0]);
-	~whale4 = Buffer.readChannel(s, "/Volumes/Samsung_T1/SoundFiles/recordings/whale-sounds/whale-sounds-wav/fin-whale-balaenoptera physalus.wav", channels: [0, 0]);
-	~whale5 = Buffer.read(s, "/Volumes/Samsung_T1/SoundFiles/recordings/whale-sounds/whale-sounds-wav/sperm-whale-physeter-macrocephalus.wav");
+	~whale1 = Buffer.readChannel(s, ~sampleLibraryRoot ++ "recordings/whale-sounds/whale-sounds-wav/killer-whale-orcinus-orca.wav", channels: [0, 0]);
+	~whale2 = Buffer.readChannel(s, ~sampleLibraryRoot ++ "recordings/whale-sounds/whale-sounds-wav/humpback-whale-megaptera-novaeangliae.wav", channels: [0, 0]);
+	~whale3 = Buffer.readChannel(s, ~sampleLibraryRoot ++ "recordings/whale-sounds/whale-sounds-wav/minke-whale-balaenoptera-acutorostrata.wav", channels: [0, 0]);
+	~whale4 = Buffer.readChannel(s, ~sampleLibraryRoot ++ "recordings/whale-sounds/whale-sounds-wav/fin-whale-balaenoptera physalus.wav", channels: [0, 0]);
+	~whale5 = Buffer.read(s, ~sampleLibraryRoot ++ "recordings/whale-sounds/whale-sounds-wav/sperm-whale-physeter-macrocephalus.wav");
 
 	[
-		"/Volumes/Samsung_T1/SoundFiles/Violin-arco/Violin.arco.ff.sulA.A4.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Violin-arco/Violin.arco.ff.sulE.E5.stereo.aif",
+		~sampleLibraryRoot ++ "Violin-arco/Violin.arco.ff.sulA.A4.stereo.aif",
+		~sampleLibraryRoot ++ "Violin-arco/Violin.arco.ff.sulE.E5.stereo.aif",
 	].do { |path|
 		var noteName = PathName(path).fileNameWithoutExtension.split($.).at(4).asSymbol;
 		~vln[noteName] = Buffer.read(s, path);
 	};
 
 	[
-		"/Volumes/Samsung_T1/SoundFiles/Viola-arco/Viola.arco.ff.sulC.C3.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Viola-arco/Viola.arco.ff.sulC.Db3.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Viola-arco/Viola.arco.ff.sulC.D3.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Viola-arco/Viola.arco.ff.sulC.Eb3.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Viola-arco/Viola.arco.ff.sulC.E3.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Viola-arco/Viola.arco.ff.sulC.F3.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Viola-arco/Viola.arco.ff.sulC.Gb3.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Viola-arco/Viola.arco.ff.sulG.G3.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Viola-arco/Viola.arco.ff.sulG.Ab3.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Viola-arco/Viola.arco.ff.sulG.A3.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Viola-arco/Viola.arco.ff.sulG.Bb3.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Viola-arco/Viola.arco.ff.sulG.B3.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Viola-arco/Viola.arco.ff.sulG.C4.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Viola-arco/Viola.arco.ff.sulG.Db4.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Viola-arco/Viola.arco.ff.sulD.D4.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Viola-arco/Viola.arco.ff.sulD.Eb4.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Viola-arco/Viola.arco.ff.sulD.E4.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Viola-arco/Viola.arco.ff.sulD.F4.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Viola-arco/Viola.arco.ff.sulD.Gb4.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Viola-arco/Viola.arco.ff.sulD.G4.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Viola-arco/Viola.arco.ff.sulD.Ab4.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Viola-arco/Viola.arco.ff.sulA.A4.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Viola-arco/Viola.arco.ff.sulA.Bb4.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Viola-arco/Viola.arco.ff.sulA.B4.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Viola-arco/Viola.arco.ff.sulA.C5.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Viola-arco/Viola.arco.ff.sulA.Db5.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Viola-arco/Viola.arco.ff.sulA.D5.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Viola-arco/Viola.arco.ff.sulA.Eb5.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Viola-arco/Viola.arco.ff.sulA.E5.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Viola-arco/Viola.arco.ff.sulA.F5.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Viola-arco/Viola.arco.ff.sulA.Gb5.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Viola-arco/Viola.arco.ff.sulA.G5.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Viola-arco/Viola.arco.ff.sulA.Ab5.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Viola-arco/Viola.arco.ff.sulA.A5.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Viola-arco/Viola.arco.ff.sulA.Bb5.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Viola-arco/Viola.arco.ff.sulA.B5.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Viola-arco/Viola.arco.ff.sulA.C6.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Viola-arco/Viola.arco.ff.sulA.Db6.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Viola-arco/Viola.arco.ff.sulA.D6.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Viola-arco/Viola.arco.ff.sulA.Eb6.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Viola-arco/Viola.arco.ff.sulA.E6.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Viola-arco/Viola.arco.ff.sulA.F6.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Viola-arco/Viola.arco.ff.sulA.Gb6.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Viola-arco/Viola.arco.ff.sulA.G6.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Viola-arco/Viola.arco.ff.sulA.Ab6.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Viola-arco/Viola.arco.ff.sulA.A6.stereo.aif",
+		~sampleLibraryRoot ++ "Viola-arco/Viola.arco.ff.sulC.C3.stereo.aif",
+		~sampleLibraryRoot ++ "Viola-arco/Viola.arco.ff.sulC.Db3.stereo.aif",
+		~sampleLibraryRoot ++ "Viola-arco/Viola.arco.ff.sulC.D3.stereo.aif",
+		~sampleLibraryRoot ++ "Viola-arco/Viola.arco.ff.sulC.Eb3.stereo.aif",
+		~sampleLibraryRoot ++ "Viola-arco/Viola.arco.ff.sulC.E3.stereo.aif",
+		~sampleLibraryRoot ++ "Viola-arco/Viola.arco.ff.sulC.F3.stereo.aif",
+		~sampleLibraryRoot ++ "Viola-arco/Viola.arco.ff.sulC.Gb3.stereo.aif",
+		~sampleLibraryRoot ++ "Viola-arco/Viola.arco.ff.sulG.G3.stereo.aif",
+		~sampleLibraryRoot ++ "Viola-arco/Viola.arco.ff.sulG.Ab3.stereo.aif",
+		~sampleLibraryRoot ++ "Viola-arco/Viola.arco.ff.sulG.A3.stereo.aif",
+		~sampleLibraryRoot ++ "Viola-arco/Viola.arco.ff.sulG.Bb3.stereo.aif",
+		~sampleLibraryRoot ++ "Viola-arco/Viola.arco.ff.sulG.B3.stereo.aif",
+		~sampleLibraryRoot ++ "Viola-arco/Viola.arco.ff.sulG.C4.stereo.aif",
+		~sampleLibraryRoot ++ "Viola-arco/Viola.arco.ff.sulG.Db4.stereo.aif",
+		~sampleLibraryRoot ++ "Viola-arco/Viola.arco.ff.sulD.D4.stereo.aif",
+		~sampleLibraryRoot ++ "Viola-arco/Viola.arco.ff.sulD.Eb4.stereo.aif",
+		~sampleLibraryRoot ++ "Viola-arco/Viola.arco.ff.sulD.E4.stereo.aif",
+		~sampleLibraryRoot ++ "Viola-arco/Viola.arco.ff.sulD.F4.stereo.aif",
+		~sampleLibraryRoot ++ "Viola-arco/Viola.arco.ff.sulD.Gb4.stereo.aif",
+		~sampleLibraryRoot ++ "Viola-arco/Viola.arco.ff.sulD.G4.stereo.aif",
+		~sampleLibraryRoot ++ "Viola-arco/Viola.arco.ff.sulD.Ab4.stereo.aif",
+		~sampleLibraryRoot ++ "Viola-arco/Viola.arco.ff.sulA.A4.stereo.aif",
+		~sampleLibraryRoot ++ "Viola-arco/Viola.arco.ff.sulA.Bb4.stereo.aif",
+		~sampleLibraryRoot ++ "Viola-arco/Viola.arco.ff.sulA.B4.stereo.aif",
+		~sampleLibraryRoot ++ "Viola-arco/Viola.arco.ff.sulA.C5.stereo.aif",
+		~sampleLibraryRoot ++ "Viola-arco/Viola.arco.ff.sulA.Db5.stereo.aif",
+		~sampleLibraryRoot ++ "Viola-arco/Viola.arco.ff.sulA.D5.stereo.aif",
+		~sampleLibraryRoot ++ "Viola-arco/Viola.arco.ff.sulA.Eb5.stereo.aif",
+		~sampleLibraryRoot ++ "Viola-arco/Viola.arco.ff.sulA.E5.stereo.aif",
+		~sampleLibraryRoot ++ "Viola-arco/Viola.arco.ff.sulA.F5.stereo.aif",
+		~sampleLibraryRoot ++ "Viola-arco/Viola.arco.ff.sulA.Gb5.stereo.aif",
+		~sampleLibraryRoot ++ "Viola-arco/Viola.arco.ff.sulA.G5.stereo.aif",
+		~sampleLibraryRoot ++ "Viola-arco/Viola.arco.ff.sulA.Ab5.stereo.aif",
+		~sampleLibraryRoot ++ "Viola-arco/Viola.arco.ff.sulA.A5.stereo.aif",
+		~sampleLibraryRoot ++ "Viola-arco/Viola.arco.ff.sulA.Bb5.stereo.aif",
+		~sampleLibraryRoot ++ "Viola-arco/Viola.arco.ff.sulA.B5.stereo.aif",
+		~sampleLibraryRoot ++ "Viola-arco/Viola.arco.ff.sulA.C6.stereo.aif",
+		~sampleLibraryRoot ++ "Viola-arco/Viola.arco.ff.sulA.Db6.stereo.aif",
+		~sampleLibraryRoot ++ "Viola-arco/Viola.arco.ff.sulA.D6.stereo.aif",
+		~sampleLibraryRoot ++ "Viola-arco/Viola.arco.ff.sulA.Eb6.stereo.aif",
+		~sampleLibraryRoot ++ "Viola-arco/Viola.arco.ff.sulA.E6.stereo.aif",
+		~sampleLibraryRoot ++ "Viola-arco/Viola.arco.ff.sulA.F6.stereo.aif",
+		~sampleLibraryRoot ++ "Viola-arco/Viola.arco.ff.sulA.Gb6.stereo.aif",
+		~sampleLibraryRoot ++ "Viola-arco/Viola.arco.ff.sulA.G6.stereo.aif",
+		~sampleLibraryRoot ++ "Viola-arco/Viola.arco.ff.sulA.Ab6.stereo.aif",
+		~sampleLibraryRoot ++ "Viola-arco/Viola.arco.ff.sulA.A6.stereo.aif",
 
 	].do { |path|
 		var noteName = PathName(path).fileNameWithoutExtension.split($.).at(4).asSymbol;
@@ -259,38 +264,38 @@
 	};
 
 	[
-		"/Volumes/Samsung_T1/SoundFiles/Cello-arco/Cello.arco.ff.sulC.C2.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Cello-arco/Cello.arco.ff.sulC.Db2.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Cello-arco/Cello.arco.ff.sulC.D2.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Cello-arco/Cello.arco.ff.sulC.Eb2.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Cello-arco/Cello.arco.ff.sulC.E2.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Cello-arco/Cello.arco.ff.sulC.F2.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Cello-arco/Cello.arco.ff.sulC.Gb2.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Cello-arco/Cello.arco.ff.sulG.G2.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Cello-arco/Cello.arco.ff.sulG.Ab2.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Cello-arco/Cello.arco.ff.sulG.A2.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Cello-arco/Cello.arco.ff.sulG.Bb2.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Cello-arco/Cello.arco.ff.sulC.B2.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Cello-arco/Cello.arco.ff.sulG.C3.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Cello-arco/Cello.arco.ff.sulG.Db3.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Cello-arco/Cello.arco.ff.sulD.D3.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Cello-arco/Cello.arco.ff.sulD.Eb3.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Cello-arco/Cello.arco.ff.sulD.E3.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Cello-arco/Cello.arco.ff.sulD.F3.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Cello-arco/Cello.arco.ff.sulD.Gb3.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Cello-arco/Cello.arco.ff.sulD.G3.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Cello-arco/Cello.arco.ff.sulD.Ab3.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Cello-arco/Cello.arco.ff.sulA.A3.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Cello-arco/Cello.arco.ff.sulA.Bb3.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Cello-arco/Cello.arco.ff.sulA.B3.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Cello-arco/Cello.arco.ff.sulA.C4.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Cello-arco/Cello.arco.ff.sulA.Db4.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Cello-arco/Cello.arco.ff.sulA.D4.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Cello-arco/Cello.arco.ff.sulA.Eb4.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Cello-arco/Cello.arco.ff.sulA.E4.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Cello-arco/Cello.arco.ff.sulA.F4.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Cello-arco/Cello.arco.ff.sulA.Gb4.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Cello-arco/Cello.arco.ff.sulA.G4.stereo.aif",
+		~sampleLibraryRoot ++ "Cello-arco/Cello.arco.ff.sulC.C2.stereo.aif",
+		~sampleLibraryRoot ++ "Cello-arco/Cello.arco.ff.sulC.Db2.stereo.aif",
+		~sampleLibraryRoot ++ "Cello-arco/Cello.arco.ff.sulC.D2.stereo.aif",
+		~sampleLibraryRoot ++ "Cello-arco/Cello.arco.ff.sulC.Eb2.stereo.aif",
+		~sampleLibraryRoot ++ "Cello-arco/Cello.arco.ff.sulC.E2.stereo.aif",
+		~sampleLibraryRoot ++ "Cello-arco/Cello.arco.ff.sulC.F2.stereo.aif",
+		~sampleLibraryRoot ++ "Cello-arco/Cello.arco.ff.sulC.Gb2.stereo.aif",
+		~sampleLibraryRoot ++ "Cello-arco/Cello.arco.ff.sulG.G2.stereo.aif",
+		~sampleLibraryRoot ++ "Cello-arco/Cello.arco.ff.sulG.Ab2.stereo.aif",
+		~sampleLibraryRoot ++ "Cello-arco/Cello.arco.ff.sulG.A2.stereo.aif",
+		~sampleLibraryRoot ++ "Cello-arco/Cello.arco.ff.sulG.Bb2.stereo.aif",
+		~sampleLibraryRoot ++ "Cello-arco/Cello.arco.ff.sulC.B2.stereo.aif",
+		~sampleLibraryRoot ++ "Cello-arco/Cello.arco.ff.sulG.C3.stereo.aif",
+		~sampleLibraryRoot ++ "Cello-arco/Cello.arco.ff.sulG.Db3.stereo.aif",
+		~sampleLibraryRoot ++ "Cello-arco/Cello.arco.ff.sulD.D3.stereo.aif",
+		~sampleLibraryRoot ++ "Cello-arco/Cello.arco.ff.sulD.Eb3.stereo.aif",
+		~sampleLibraryRoot ++ "Cello-arco/Cello.arco.ff.sulD.E3.stereo.aif",
+		~sampleLibraryRoot ++ "Cello-arco/Cello.arco.ff.sulD.F3.stereo.aif",
+		~sampleLibraryRoot ++ "Cello-arco/Cello.arco.ff.sulD.Gb3.stereo.aif",
+		~sampleLibraryRoot ++ "Cello-arco/Cello.arco.ff.sulD.G3.stereo.aif",
+		~sampleLibraryRoot ++ "Cello-arco/Cello.arco.ff.sulD.Ab3.stereo.aif",
+		~sampleLibraryRoot ++ "Cello-arco/Cello.arco.ff.sulA.A3.stereo.aif",
+		~sampleLibraryRoot ++ "Cello-arco/Cello.arco.ff.sulA.Bb3.stereo.aif",
+		~sampleLibraryRoot ++ "Cello-arco/Cello.arco.ff.sulA.B3.stereo.aif",
+		~sampleLibraryRoot ++ "Cello-arco/Cello.arco.ff.sulA.C4.stereo.aif",
+		~sampleLibraryRoot ++ "Cello-arco/Cello.arco.ff.sulA.Db4.stereo.aif",
+		~sampleLibraryRoot ++ "Cello-arco/Cello.arco.ff.sulA.D4.stereo.aif",
+		~sampleLibraryRoot ++ "Cello-arco/Cello.arco.ff.sulA.Eb4.stereo.aif",
+		~sampleLibraryRoot ++ "Cello-arco/Cello.arco.ff.sulA.E4.stereo.aif",
+		~sampleLibraryRoot ++ "Cello-arco/Cello.arco.ff.sulA.F4.stereo.aif",
+		~sampleLibraryRoot ++ "Cello-arco/Cello.arco.ff.sulA.Gb4.stereo.aif",
+		~sampleLibraryRoot ++ "Cello-arco/Cello.arco.ff.sulA.G4.stereo.aif",
 
 	].do { |path|
 		var noteName = PathName(path).fileNameWithoutExtension.split($.).at(4).asSymbol;
@@ -298,39 +303,39 @@
 	};
 
 	[
-		"/Volumes/Samsung_T1/SoundFiles/Bass-arco/Bass.arco.ff.sulC.C1.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-arco/Bass.arco.ff.sulC.Db1.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-arco/Bass.arco.ff.sulC.D1.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-arco/Bass.arco.ff.sulC.Eb1.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-arco/Bass.arco.ff.sulE.E1.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-arco/Bass.arco.ff.sulE.F1.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-arco/Bass.arco.ff.sulE.Gb1.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-arco/Bass.arco.ff.sulE.G1.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-arco/Bass.arco.ff.sulE.Ab1.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-arco/Bass.arco.ff.sulA.A1.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-arco/Bass.arco.ff.sulA.Bb1.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-arco/Bass.arco.ff.sulA.B1.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-arco/Bass.arco.ff.sulA.C2.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-arco/Bass.arco.ff.sulA.Db2.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-arco/Bass.arco.ff.sulD.D2.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-arco/Bass.arco.ff.sulD.Eb2.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-arco/Bass.arco.ff.sulD.E2.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-arco/Bass.arco.ff.sulD.F2.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-arco/Bass.arco.ff.sulD.Gb2.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-arco/Bass.arco.ff.sulG.G2.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-arco/Bass.arco.ff.sulG.Ab2.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-arco/Bass.arco.ff.sulG.A2.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-arco/Bass.arco.ff.sulG.Bb2.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-arco/Bass.arco.ff.sulG.B2.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-arco/Bass.arco.ff.sulG.C3.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-arco/Bass.arco.ff.sulC.C1.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-arco/Bass.arco.ff.sulC.Db1.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-arco/Bass.arco.ff.sulC.D1.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-arco/Bass.arco.ff.sulC.Eb1.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-arco/Bass.arco.ff.sulE.E1.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-arco/Bass.arco.ff.sulE.F1.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-arco/Bass.arco.ff.sulE.Gb1.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-arco/Bass.arco.ff.sulE.G1.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-arco/Bass.arco.ff.sulE.Ab1.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-arco/Bass.arco.ff.sulA.A1.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-arco/Bass.arco.ff.sulA.Bb1.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-arco/Bass.arco.ff.sulA.B1.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-arco/Bass.arco.ff.sulA.C2.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-arco/Bass.arco.ff.sulA.Db2.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-arco/Bass.arco.ff.sulD.D2.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-arco/Bass.arco.ff.sulD.Eb2.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-arco/Bass.arco.ff.sulD.E2.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-arco/Bass.arco.ff.sulD.F2.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-arco/Bass.arco.ff.sulD.Gb2.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-arco/Bass.arco.ff.sulG.G2.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-arco/Bass.arco.ff.sulG.Ab2.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-arco/Bass.arco.ff.sulG.A2.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-arco/Bass.arco.ff.sulG.Bb2.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-arco/Bass.arco.ff.sulG.B2.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-arco/Bass.arco.ff.sulG.C3.stereo.aif",
 
-		"/Volumes/Samsung_T1/SoundFiles/Bass-arco/Bass.arco.ff.sulG.Db3.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-arco/Bass.arco.ff.sulG.D3.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-arco/Bass.arco.ff.sulG.Eb3.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-arco/Bass.arco.ff.sulG.E3.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-arco/Bass.arco.ff.sulG.F3.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-arco/Bass.arco.ff.sulG.Gb3.stereo.aif",
-		"/Volumes/Samsung_T1/SoundFiles/Bass-arco/Bass.arco.ff.sulG.G3.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-arco/Bass.arco.ff.sulG.Db3.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-arco/Bass.arco.ff.sulG.D3.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-arco/Bass.arco.ff.sulG.Eb3.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-arco/Bass.arco.ff.sulG.E3.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-arco/Bass.arco.ff.sulG.F3.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-arco/Bass.arco.ff.sulG.Gb3.stereo.aif",
+		~sampleLibraryRoot ++ "Bass-arco/Bass.arco.ff.sulG.G3.stereo.aif",
 
 	].do { |path|
 		var noteName = PathName(path).fileNameWithoutExtension.split($.).at(4).asSymbol;
@@ -340,5 +345,7 @@
 
 	s.sync;
 	"Buffers loaded:".postln;
+	~buffersLoaded.test = true;
+	~buffersLoaded.signal;
 }.play;
 )
