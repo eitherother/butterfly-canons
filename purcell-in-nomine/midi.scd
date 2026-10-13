@@ -1,5 +1,5 @@
 // ============================================================
-// TVP3 — MIDI (Novation Launch Control XL)
+// Purcell In Nomine — MIDI (Novation Launch Control XL)
 // ============================================================
 // Load after conductor.scd and rhythm.scd.
 //

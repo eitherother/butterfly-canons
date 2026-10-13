@@ -1,16 +1,16 @@
 // ============================================================
-// TVP3 — Signal Flow
+// Purcell In Nomine — Signal Flow
 // ============================================================
-// Load order: tvp3_synths → tvp3_signal_flow → tvp3_samples
+// Load order: synths → signal_flow → samples
 //
-// SynthDefs required from tvp3_synths.scd:
-//   \stepSeqBufSwap  — step sequencer (same as tvp2)
-//   \layerMixer      — simple amp + lag (same as tvp2)
-//   \flowMixer       — layerMixerTrem (tvp3 version)
-//   \freezeLike      — freeze processor (same as tvp2)
-//   \globalDelay     — delay send processor (new)
-//   \spectralSend    — spectral reverb + blur send (new)
-//   \masterChain     — LPF + reverb → output (new, replaces masterReverb)
+// SynthDefs required from synths.scd:
+//   \stepSeqBufSwap  — step sequencer
+//   \layerMixer      — simple amp + lag
+//   \flowMixer       — per-flow mixer with dual tremolo
+//   \freezeLike      — freeze processor
+//   \globalDelay     — delay send processor
+//   \spectralSend    — spectral reverb + blur send
+//   \masterChain     — LPF + reverb → output
 // ============================================================
 
 (
@@ -114,7 +114,7 @@ s.sync;  // wait for Buffer.alloc to complete before creating synths
 
 // --- Global delay processor ---
 // Reads ~delaySendBus. Conductor routes delay:true flows there at scene load.
-// amp=0 by default — column 7 fader brings it up during performance.
+// amp=0 by default — CC 16 (top-row dial) brings it up during performance.
 ~delayProcessor = Synth.tail(~fxGroup, \globalDelay, [
 	\inBus,     ~delaySendBus,
 	\out,       ~masterBus,
@@ -127,7 +127,7 @@ s.sync;  // wait for Buffer.alloc to complete before creating synths
 // --- Spectral processor ---
 // Reads ~spectralSendBus — flows with spectral:true send pre-fader grains here
 // (same topology as freeze). Adds wet blur back to ~masterBus.
-// amp=0 by default — CC 36 (col 8 dial bot) brings it up during performance.
+// amp=0 by default — CC 15 (top-row dial) brings it up during performance.
 ~spectralProcessor = Synth.tail(~fxGroup, \spectralSend, [
 	\inBus,   ~spectralSendBus,
 	\out,     ~masterBus,
@@ -138,14 +138,15 @@ s.sync;  // wait for Buffer.alloc to complete before creating synths
 ]);
 
 // --- Freeze output mixer → master ---
-// amp=0 by default — column 8 fader controls freeze presence in the mix
+// amp=0 by default — CC 13 (top-row dial) controls freeze presence in the mix
 ~freezeMixer = Synth.tail(~fxGroup, \layerMixer, [
 	\inBus, ~freezeOutBus, \out, ~masterBus, \amp, 0, \lag, 5
 ]);
 
 // --- Master chain: global LPF → reverb send → output 0 ---
-// cutoff defaults fully open (20000 Hz). Column 8 dial narrows it.
-// verbHPF keeps bass out of the reverb send. Reverb params adjustable via .set() in performance.
+// cutoff defaults fully open (20000 Hz); not wired to MIDI in this piece.
+// verbHPF keeps bass out of the reverb send. Reverb mix is CC 19; other
+// reverb params adjustable via .set() in performance.
 ~masterChain = Synth.tail(~fxGroup, \masterChain, [
 	\inBus,   ~masterBus,
 	\out,     0,
@@ -156,7 +157,7 @@ s.sync;  // wait for Buffer.alloc to complete before creating synths
 	\lag,     3,
 ]);
 
-"TVP3 signal flow ready.".postln;
+"Purcell In Nomine signal flow ready.".postln;
 
 } // end fork
 )

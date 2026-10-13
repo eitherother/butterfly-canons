@@ -1,9 +1,9 @@
 // ============================================================
-// TVP3 — Conductor
+// Purcell In Nomine — Conductor
 // ============================================================
 // Manages scene state, Pdef construction, and hardware control.
-// Load after tvp3_signal_flow.scd and tvp3_samples.scd.
-// Load ~score (tvp3_score.scd or test score) before calling ~loadScene.
+// Load after signal_flow.scd and samples.scd.
+// Load ~score (score.scd) before calling ~loadScene.
 //
 // Public API:
 //   ~loadScene(index, preAdvance=0) — enter a scene from ~score; preAdvance
@@ -14,7 +14,7 @@
 //   ~advanceHarmony                — step all active flows to next step
 //   ~startFlow(i)                  — start flow i
 //   ~stopFlow(i)                   — stop flow i
-//   ~onDialChange(fi, di, normVal) — MIDI dial, normVal 0.0–1.0
+//   ~onDialChange(fi, di, val)     — MIDI dial, val 0–127
 //   ~onFaderChange(fi, normVal)    — MIDI fader, normVal 0.0–1.0
 //   ~onLayerToggle(li)             — toggle electronic layer li (0–2) on/off
 //   ~onButton1(fi)                 — toggle start/stop on flow i
@@ -24,13 +24,13 @@
 //   ~checkCheckpoints              — posts any newly-crossed checkpoint messages
 //   ~onHarmonyAdvance              — alias for ~advanceHarmony
 //   ~onSceneAdvance                — advance to next scene (wraps)
-//   ~advanceRhythm                 — step scene's rhythm sequence (defined in tvp3_rhythm.scd)
+//   ~advanceRhythm                 — step scene's rhythm sequence (defined in rhythm.scd)
 //
 // Button 2 score format:
 //   button: (key: value, ...)     — Event of Pbind overrides applied when active
 //   e.g.  button: (rate: Pwhite(0.75, 1.33))
 //         button: (centerPos: Pwhite(0.1, 0.9), grainWidth: 0.02)
-//   Any \bufferSliceML or \bufferFragment arg can be overridden.
+//   Any \bufferSliceML arg can be overridden.
 //
 // Plugin dial system (per flow):
 //   Each flow declares dials: [\type1, \type2] in the score.
@@ -43,6 +43,10 @@
 //     \doubleAmp   → 4  (Pbind via Pfunc on shadow voices, no .set needed)
 //     \attack      → 5  (Pbind via Pfunc, no .set needed)
 //     \tremDepth2  → 6  (on ~mixers via .set)
+//     \tremSkew    → 7  (on ~mixers via .set)
+//     \tremWave    → 8  (on ~mixers via .set)
+//     \tremSkew2   → 9  (on ~mixers via .set)
+//     \tremWave2   → 10 (on ~mixers via .set)
 //   ~flowDialTypes[fi] stores the two type symbols for each flow.
 //   ~dialTypeToInternalIndex maps type → index.
 // ============================================================
@@ -50,8 +54,8 @@
 (
 
 // --- Control state ---
-// Normalised 0.0–1.0, updated by MIDI handler or directly in tests.
-~flowDials     = Array.fill(8, { Array.fill(11, { 0.5 }) });
+// Dials hold raw MIDI values 0–127; faders are normalised 0.0–1.0.
+~flowDials     = Array.fill(8, { Array.fill(11, { 63 }) });
 ~flowFaders    = Array.fill(8, { 1.0 });
 ~flowDialTypes = Array.fill(8, { [\seqDepth, \grainCenter] });
 
@@ -223,7 +227,7 @@
 // grainCenter three-mode: Array → dial-mapped Pfunc, else Pfunc reading ~flowDials[2] directly.
 // On scene load, ~flowDials[i][2] is seeded from the first step's grainCenter.
 // grainCenterLag (0-1, default 0.15): fraction of the remaining distance to
-// close per grain; 1.0 = instant jump (old behavior), smaller = slower glide.
+// close per grain; 1.0 = instant jump, smaller = slower glide.
 ~resolveGrainCenter = { |flowIndex, flowDef, step|
     var flowGc = flowDef[\grainCenter];
     var stepGc = step[\grainCenter];
@@ -373,6 +377,7 @@
         \attack,     ~resolveAttack.(flowIndex, flowDef),
         \release,    flowDef[\release] ?? 0.05,
         \amp,        flowDef[\amp] ?? 0.08,
+        \pan,        flowDef[\pan] ?? 0,
     ];
     if (b2On) { b2.keysValuesDo { |k, v| pairs = pairs ++ [k.asSymbol, v] } };
     mainPat = if ((step[\double] ?? flowDef[\double]).notNil) {
@@ -403,39 +408,7 @@
     } { mainPat })
 };
 
-~buildBufferPdef = { |flowIndex, flowDef, stepIndex, withOffset = false|
-    var step, b2, b2On, pdefName, pairs, offset;
-    step     = flowDef[\steps][stepIndex];
-    b2       = flowDef[\button];
-    b2On     = ~buttonActive[flowIndex] && b2.notNil;
-    pdefName = ("flow" ++ flowIndex).asSymbol;
-    offset   = if (withOffset) { flowDef[\startOffset] ?? 0 } { 0 };
-    pairs    = [
-        \instrument,  \bufferFragment,
-        \out,         ~flowBus[flowIndex],
-        \freezeBus,   ~freezeSendBus,
-        \freezeSend,  if (flowDef[\freeze].isKindOf(Number)) { flowDef[\freeze] } { (flowDef[\freeze] ? false).if(1, 0) },
-        \spectralBus, ~spectralSendBus,
-        \spectralSend,(flowDef[\spectral] ? false).if(1, 0),
-        \buf,         ~buildBufSeq.(step),
-        \dur,        ~resolveDur.(flowIndex, flowDef, 2.0),
-        \attack,     0.05,
-        \release,    0.05,
-        \amp,        flowDef[\amp] ?? 0.08,
-    ];
-    if (b2On) { b2.keysValuesDo { |k, v| pairs = pairs ++ [k.asSymbol, v] } };
-    Pdef(pdefName, if (offset > 0) {
-        Pseq([Pbind(\type, \rest, \dur, Pn(offset, 1)), Pbind(*pairs)], 1)
-    } { Pbind(*pairs) })
-};
-
-~buildFlowPdef = { |flowIndex, flowDef, stepIndex, withOffset = false|
-    if ((flowDef[\type] ?? \granular) == \granular) {
-        ~buildGranularPdef.(flowIndex, flowDef, stepIndex, withOffset)
-    } {
-        ~buildBufferPdef.(flowIndex, flowDef, stepIndex, withOffset)
-    }
-};
+~buildFlowPdef = ~buildGranularPdef;
 
 
 // ---- Public API ---------------------------------------------
@@ -754,5 +727,5 @@
     }
 };
 
-"TVP3 conductor ready.".postln;
+"Purcell In Nomine conductor ready.".postln;
 )

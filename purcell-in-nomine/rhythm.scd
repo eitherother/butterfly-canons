@@ -1,7 +1,7 @@
 // ============================================================
-// TVP3 — Rhythm
+// Purcell In Nomine — Rhythm
 // ============================================================
-// Load after tvp3_signal_flow.scd.
+// Load after signal_flow.scd.
 //
 // Named rhythm sequences referenced by scene via rhythm: \name.
 // Each sequence is an array of steps; each step is an array
@@ -86,158 +86,13 @@
 
 // --- Named sequences ---
 // Each entry is an array of steps.
-// Steps are arrays [flow0_entry, flow1_entry, flow2_entry, flow3_entry, ...].
-// Flows 4-6 omitted here — extend the arrays if those flows get sequencers.
+// Steps are arrays of 8 entries, one per flow (nil = leave that flow's sequencer as is).
 
 ~rhythmSequences = Dictionary.new;
 
 
-~rhythmSequences[\imitation] = [
-	[
-		(pat: #[1,0,0,0, 1,0,1,0, 1,1,1,0, 0,1,1,0]),
-
-		(pat: #[1,0, 1,0,0,0, 1,0,1,0, 1,1,1,0, 0,1]),
-
-		(pat: #[0,1,1,0, 1,0,0,0, 1,0,1,0, 1,1,1,0]),
-		nil,nil,nil,nil,
-		(pat: #[1,0, 0,1,1,0, 1,0,0,0, 1,0,1,0, 1,1]),
-	],
-	[
-		(pat: #[1,0,1,0, 0,1,1,0, 1,0,1,0, 1,0,0,0]),
-		(pat: #[1,0,0,0, 1,0,0,0, 1,0,1,0, 0,1,1,0]),
-		(pat: #[0,0, 1,0,1,0, 0,1,1,0, 1,0,1,0, 1,0]),
-
-		nil,nil,nil,nil,
-		(pat: #[1,0, 1,0,0,0, 1,0,0,0, 1,0,1,0, 0,1]),
-	],
-	[
-		(pat: #[1,0,0,1, 1,0,1,0, 0,0,1,0, 1,0,0,0]),
-		(pat: #[0,0, 1,0,0,1, 1,0,1,0, 0,0,1,0, 1,0]),
-		(pat: #[1,0,0,0, 1,0,1,0, 1,0,0,0, 1,0,0,0]),
-
-		nil,nil,nil,nil,
-		(pat: #[0, 1,0,0,0, 1,0,1,0, 1,0,0,0, 1,0, 0]),
-	],
-];
-
-
-
-~rhythmSequences[\gloria] = [
-	[
-		(pat: #[1,0,0,1, 1,0,1,0, 1,0,1,1, 0,1,1,0]),
-
-		(pat: #[1,0, 1,0,0,1, 1,0,1,0, 1,0,1,1, 0,1]),
-
-		(pat: #[0,1,1,0, 1,0,0,1, 1,0,1,0, 1,0,1,1]),
-		nil,nil,nil,nil,nil
-	],
-
-];
-
-~rhythmSequences[\grooves] = [
-	// 1. Open — sparse, mostly space
-/*	[
-		(k: 3, n: 16, r: 2),
-		(k: 2, n: 16, r: 10),
-		(k: 3, n: 16, r: 6),
-		(k: 2, n: 16, r: 14),
-		(k: 2, n: 16, r: 0),
-		(k: 3, n: 16, r: 8),
-		(k: 2, n: 16, r: 4),
-		(k: 3, n: 16, r: 12),
-	],*/
-	// 2. Building
-	[
-		(k: 4, n: 16, r: 2),
-		(k: 3, n: 16, r: 10),
-		(k: 4, n: 16, r: 6),
-		nil,//(k: 3, n: 16, r: 14),
-		nil,//(k: 3, n: 16, r: 0),
-		nil,//(k: 4, n: 16, r: 8),
-		nil,//(k: 3, n: 16, r: 4),
-		(k: 4, n: 16, r: 12),
-	],
-	// 3. Filling in
-	[
-		(k: 6, n: 16, r: 2),
-		(k: 5, n: 16, r: 8),
-		(k: 5, n: 16, r: 13),
-		nil,//(k: 4, n: 16, r: 4),
-		nil,//(k: 5, n: 16, r: 0),
-		nil,//(k: 5, n: 16, r: 6),
-		nil,//(k: 4, n: 16, r: 11),
-		(k: 5, n: 16, r: 2),
-	],
-	// 4. Approaching climax
-	[
-		(k: 8, n: 16, r: 2),
-		(k: 7, n: 16, r: 7),
-		(k: 7, n: 16, r: 10),
-		nil,//(k: 6, n: 16, r: 5),
-		nil,//(k: 7, n: 16, r: 0),
-		nil,//(k: 6, n: 16, r: 5),
-		nil,//(k: 6, n: 16, r: 8),
-		(k: 7, n: 16, r: 3),
-	],
-	// 5. Dense drive — climax
-	[
-		(k: 10, n: 16, r: 2),
-		(k: 8, n: 16, r: 7),
-		(k: 8, n: 16, r: 10),
-		nil,//(k: 8, n: 16, r: 5),
-		nil,//(k: 9, n: 16, r: 0),
-		nil,//(k: 7, n: 16, r: 5),
-		nil,//(k: 9, n: 16, r: 8),
-		(k: 7, n: 16, r: 3),
-	],
-	// 6. Five-against-seven — climax continues
-	[
-		(k: 6, n: 16, r: 2),
-		(k: 8, n: 16, r: 8),
-		(k: 6, n: 16, r: 13),
-		(k: 8, n: 16, r: 4),
-		nil,//(k: 5, n: 16, r:  0),
-		nil,//(k: 7, n: 16, r:  6),
-		nil,//(k: 5, n: 16, r: 11),
-		(k: 7, n: 16, r:  2),
-	],
-	// 7. Interlocking offsets — receding
-/*	[
-		(k: 6, n: 16, r: 2),
-		(k: 8, n: 16, r: 2),
-		(k: 6, n: 16, r: 10),
-		(k: 4, n: 16, r: 5),
-		(k: 5, n: 16, r: 0),
-		(k: 7, n: 16, r: 0),
-		(k: 5, n: 16, r: 8),
-		(k: 3, n: 16, r: 3),
-	],*/
-	// 8. Thinning
-/*	[
-		(k: 5, n: 16, r: 2),
-		(k: 6, n: 16, r: 10),
-		(k: 4, n: 16, r: 6),
-		(k: 5, n: 16, r: 14),
-		(k: 4, n: 16, r: 0),
-		(k: 5, n: 16, r: 8),
-		(k: 3, n: 16, r: 4),
-		(k: 4, n: 16, r: 12),
-	],*/
-	// 9. Fade — sparser than the opening, before the loop back to step 1
-/*	[
-		(k: 2, n: 16, r: 2),
-		(k: 3, n: 16, r: 10),
-		(k: 2, n: 16, r: 6),
-		(k: 3, n: 16, r: 14),
-		(k: 1, n: 16, r: 0),
-		(k: 2, n: 16, r: 8),
-		(k: 1, n: 16, r: 4),
-		(k: 2, n: 16, r: 12),
-	],*/
-];
-
-// Compound grid (n=12 = triplet 8ths, 4 beats x 3) — same arc as \grooves,
-// but Bjorklund hits land on triplet subdivisions instead of straight 16ths.
+// Compound grid (n=12 = triplet 8ths, 4 beats x 3) — a building arc of
+// Bjorklund hits on triplet subdivisions.
 ~rhythmSequences[\tripletGrooves] = [
 	// 1. Building
 	[
@@ -269,7 +124,7 @@
 		(k: 4, n: 12, r: 6),
 		(k: 5, n: 12, r: 2),
 	],
-	// 5. Four-against-five — climax continues
+	// 4. Four-against-five — climax
 	[
 		(k: 8, n: 12, r: 1),
 		(k: 6, n: 12, r: 5),
@@ -279,7 +134,7 @@
 		(k: 6, n: 12, r: 6),
 		(k: 5, n: 12, r: 4),
 	],
-	// 4. Dense drive — climax
+	// 5. Dense drive — climax continues
 	[
 		(k: 8, n: 12, r: 1),
 		(k: 6, n: 12, r: 5),
@@ -314,7 +169,7 @@
 // Initialise all sequencers silent
 ~silenceRhythm.();
 
-"TVP3 rhythm ready — ~advanceRhythm / ~silenceRhythm".postln;
+"Purcell In Nomine rhythm ready — ~advanceRhythm / ~silenceRhythm".postln;
 
 )
 
