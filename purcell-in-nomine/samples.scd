@@ -7,6 +7,7 @@
 //   ~in_nomine_6 — Purcell In Nomine recording (as ~music in score.scd)
 //   ~silence     — silent buffer, used as a rest in step buffer lists
 //   ~cl          — clarinet, keyed by note name (\Gb6 etc.)
+//   ~flt         — flute, keyed by note name
 //   ~bass        — double bass arco, keyed by note name (\Gb1 etc.)
 //   ~woodlands, ~seawash — BBC SFX atmospheres
 //   ~whale3, ~whale4     — whale recordings (left channel, duplicated to stereo)
@@ -14,6 +15,7 @@
 
 (
 ~cl   = Dictionary.new;
+~flt  = Dictionary.new;
 ~bass = Dictionary.new;
 
 
@@ -24,6 +26,7 @@
 
 ~load_samples = Routine {
 	var clFolder = ~sampleLibraryRoot ++ "Clarinet/post2012/";
+	var fltFolder = ~sampleLibraryRoot ++ "Flute/";
 	var whaleFolder = ~sampleLibraryRoot ++ "recordings/whale-sounds/whale-sounds-wav/";
 
 	~in_nomine_6 = Buffer.read(s, ~sampleLibraryRoot ++ "recordings/purcell_in_nomine_6.wav");
@@ -38,6 +41,11 @@
 	PathName(clFolder).files.do { |file|
 		var noteName = file.fileNameWithoutExtension.split($.).at(2).asSymbol;
 		~cl[noteName] = Buffer.read(s, file.fullPath);
+	};
+
+	PathName(fltFolder).files.do { |file|
+		var noteName = file.fileNameWithoutExtension.split($.).at(3).asSymbol;
+		~flt[noteName] = Buffer.read(s, file.fullPath);
 	};
 
 	[
