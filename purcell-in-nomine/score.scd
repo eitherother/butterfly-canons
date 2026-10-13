@@ -85,9 +85,7 @@
 ~f1 = ~qn / 8;
 ~f3 = ~qn / 3;
 
-
 ~music = ~in_nomine_6;
-
 
 ~score = [
 	// ---- Scene 1 -----------------------------------------------
@@ -204,9 +202,9 @@
 				], inf),
 				pan: -0.6,
 				attack: [0.001, 0.3, 0.001], release: 0.001,
-				rate: Pwhite(0.999, 1.001),
+				rate: 3*Pwhite(0.999, 1.001),
 				grainCenter: 20/127, grainWidth: [0.0, 0.001, 0.0],
-				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~qn*16, tremSkew: 0.9, tremWave: 0.9, tremPulseWidth: 0.5, tremTarget: \pulse,
+				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~qn*16, tremSkew: 0.9, tremWave: 0.9, tremPulseWidth: 0.1, tremTarget: \pulse,
 				steps: [
 					(buffers: [
 						~seawash
