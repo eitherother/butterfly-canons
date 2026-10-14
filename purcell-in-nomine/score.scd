@@ -15,6 +15,8 @@
 //   freeze:     false         — route grains to freeze bus (pre-fader)
 //   spectral:   false         — route grains to spectral bus (pre-fader, like freeze)
 //   delay:      false         — tap flow to global delay send
+//   reso:       false         — run flow through the tuned resonator; CC 18 sets the amount
+//   resoNote:   \Gb3          — resonator pitch; note name or raw MIDI int
 //   amp:        0.08          — grain amplitude
 //   dur:        0.5           — grain firing interval (seconds); Pattern for variation
 //   attack:     0.05          — grain attack (seconds); use 0.5 for smooth wash
@@ -105,9 +107,9 @@
 
 				grainWidth: Pwhite(0.2, 0.3), grainCenter: 0.25,
 				seqDepth: [0.0, 1.0, 0.0],
-				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~qn*8, tremSkew: 0.5, tremWave: 0.0, tremTarget: \saw,
+				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~qn*8, tremSkew: 0, tremWave: 0.0, tremTarget: \saw,
 				doubleAmp: [0,1,0], double: [2.0],
-				tremDepth2:  [0.0, 1.0, 0.0], tremRate2: ~qn*2, tremSkew2: 0.5, tremWave2: 1.0, tremTarget2: \saw,
+				tremDepth2:  [0.0, 1.0, 0.0], tremRate2: ~qn*2, tremSkew2: 0, tremWave2: 1.0, tremTarget2: \saw,
 				steps: [
 					(buffers: [~bass[\Gb1]], repeats: [96]),
 				],
@@ -176,15 +178,20 @@
 
 			(
 				dials:      [\tremDepth, \grainWidth],
-				freeze:     false, spectral: false, delay: true,
+				freeze:     false, spectral: false, delay: true, reso: true,
 				amp:        2.0,
 				dur:        Pseq([
-					~f2
+					Pn(~f2, 24),
+					Pseq([
+						~f2, ~f2,
+						~f2, ~f2,
+						~f1, ~f2, Rest(~f1),
+					], 2),
 				], inf),
 				pan: -0.6,
 				attack: 0.001, release: 0.001,
 				rate: Pwhite(0.999, 1.001),
-				grainCenter: Pseq([41/127, 63/127], inf), grainWidth: [0.0, 0.005, 0.0],
+				grainCenter: Pseq([41/127, 63/127], inf), grainWidth: [0.0, 0.0025, 0.0],
 				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~qn*16, tremSkew: 0.5, tremWave: 0.0, tremTarget: \pulse,
 				steps: [
 					(buffers: [
@@ -194,11 +201,14 @@
 			),
 			(
 				dials:      [\tremDepth, \grainWidth],
-				freeze:     false, spectral: false, delay: false,
+				freeze:     false, spectral: false, delay: false, reso: true, resoNote: \A3,
 				amp:        2.0,
 				dur:        Pseq([
 					~f2, Rest(~f1), ~f1, Rest(~f1), ~f1, Rest(~f2),
-					Rest(~f2), ~f1*2, ~f1, Rest(~f1/2), Rest(~f1), ~f1, Rest(~f1/2),
+					Rest(~f2), ~f2, ~f1, Rest(~f1), Rest(~f1), ~f1,
+
+					Rest(~f1), ~f2, ~f1, Rest(~f1), ~f1, Rest(~f2),
+					Rest(~f2), Rest(~f1), ~f2, ~f1,  Rest(~f1), ~f1
 				], inf),
 				pan: -0.6,
 				attack: [0.001, 0.3, 0.001], release: 0.001,
@@ -221,6 +231,7 @@
 					Rest(~f4),
 					~f1, ~f1, Rest(~f1), ~f1,
 					Rest(~f4),
+					~f1, ~f1, Rest(~f2),
 				], inf),
 				pan: -0.6,
 				attack: 0.001, release: 0.001,
@@ -253,6 +264,10 @@
 						~cl[\Gb6], ~cl[\A6], ~cl[\Ab6], ~silence,
 						~cl[\Gb6], ~cl[\A6], ~cl[\Ab6], ~silence,
 						~cl[\Gb6], ~cl[\A6], ~cl[\Ab6], ~cl[\E6], ~cl[\D6], ~silence,
+						~flt[\Gb6], ~flt[\A6], ~flt[\Ab6], ~silence,
+						~flt[\Gb6], ~flt[\A6], ~flt[\Ab6], ~flt[\B6], ~silence,
+						~flt[\Db7], ~flt[\A6], ~flt[\Ab6], ~flt[\B6], ~flt[\F6], ~silence,
+
 					], repeats: [12, 14, 13, 11, 15]),
 				],
 			),

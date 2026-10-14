@@ -28,8 +28,8 @@
 //   CC 15 → spectral send amount
 //   CC 16 → delay amp
 //   CC 17 → delay feedback
-//   CC 18 → global seqDepth — sets step-sequencer gating depth on all flows at once;
-//           acts as a base value, overridden live by any flow's own seqDepth dial (if declared)
+//   CC 18 → resonator amount — applies only to flows with reso: true in the score
+//           (rhythm depth now comes from a flow's own seqDepth dial or score value)
 //   CC 19 → reverb mix
 //   CC 20 → master volume
 //   (LPF left fully open)
@@ -58,7 +58,7 @@ var chan = 0;
 ~gSpectral    = 0.0;
 ~gDelayAmp    = 0.0;
 ~gDelay       = 0.0;
-~gSeqDepth    = 0.0;
+~gReso        = 0.0;
 ~gReverb      = 0.0;
 ~gMasterVol   = 1.0;
 
@@ -71,7 +71,7 @@ var chan = 0;
         ~lcxl.control(fc, 15, ~toMidi.(~gSpectral));
         ~lcxl.control(fc, 16, ~toMidi.(~gDelayAmp));
         ~lcxl.control(fc, 17, ~toMidi.(~gDelay));
-        ~lcxl.control(fc, 18, ~toMidi.(~gSeqDepth));
+        ~lcxl.control(fc, 18, ~toMidi.(~gReso));
         ~lcxl.control(fc, 19, ~toMidi.(~gReverb));
         ~lcxl.control(fc, 20, ~toMidi.(~gMasterVol));
         // Per-flow: mid (CC 21–28), bot (CC 29–36), fader (CC 5–12)
@@ -94,7 +94,7 @@ MIDIdef.cc(\g_shimmer,    { |val| ~gShimmer   = val/127; ~freezer.set(\shimmer, 
 MIDIdef.cc(\g_spectral,   { |val| ~gSpectral  = val/127; ~spectralProcessor.set(\amp, ~gSpectral) },             15, chan);
 MIDIdef.cc(\g_delayamp,   { |val| ~gDelayAmp  = val/127; ~delayProcessor.set(\amp, ~gDelayAmp) },                16, chan);
 MIDIdef.cc(\g_delayfb,    { |val| ~gDelay     = val/127; ~delayProcessor.set(\feedback, val.linlin(0, 127, 0, 0.9)) }, 17, chan);
-MIDIdef.cc(\g_seqdepth,   { |val| ~gSeqDepth  = val/127; 8.do { |i| if (~activeFlows[i]) { ~seqs[i].set(\depth, ~gSeqDepth) } } }, 18, chan);
+MIDIdef.cc(\g_reso,       { |val| ~gReso      = val/127; ~mixers.do { |m| m.set(\resoAmt, ~gReso) } },       18, chan);
 MIDIdef.cc(\g_reverb,     { |val| ~gReverb    = val/127; ~masterChain.set(\verb, ~gReverb) },                    19, chan);
 MIDIdef.cc(\g_mastervol,  { |val| ~gMasterVol = val/127; ~masterChain.set(\amp, ~gMasterVol) },                  20, chan);
 

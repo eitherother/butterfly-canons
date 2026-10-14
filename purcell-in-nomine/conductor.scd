@@ -471,7 +471,7 @@
     scene[\flows].do { |flowDef, i|
         if (flowDef.notNil) {
             var step0, td, gw, tdRange, gwRange, gc, da, daRange, atk, atkRange, td2, td2Range;
-            var ts, tsRange, tw, twRange, ts2, ts2Range, tw2, tw2Range, sd, sdRange;
+            var ts, tsRange, tw, twRange, ts2, ts2Range, tw2, tw2Range, sd, sdRange, resoNote;
             step0 = flowDef[\steps][0];
             ~activeFlows[i] = true;
             ~storeDialRanges.(i, flowDef);
@@ -560,6 +560,10 @@
             Pdef(("flow" ++ i).asSymbol).stop;
             Pdef(("flow" ++ i).asSymbol).play;
             ~setDelaySend.(i, flowDef[\delay] ? false);
+            ~mixers[i].set(\reso, (flowDef[\reso] ? false).if(1, 0));
+            resoNote = flowDef[\resoNote] ?? \Gb3;
+            if (resoNote.isKindOf(Symbol)) { resoNote = ~noteNameToMidi.(resoNote) };
+            ~mixers[i].set(\resoFreq, resoNote.midicps);
         } {
             ~activeFlows[i]           = false;
             ~flowDials[i]             = [63, 0, 63, 0, 63, 63, 0, 63, 0, 63, 0];
@@ -568,6 +572,7 @@
             ~flowGrainCenterSmoothed[i] = nil;
             Pdef(("flow" ++ i).asSymbol).stop;
             ~setDelaySend.(i, false);
+            ~mixers[i].set(\reso, 0);
             ~mixers[i].set(\amp, 0);
         }
     };
@@ -586,16 +591,15 @@
     seq     = if (seqName.notNil) { ~rhythmSequences[seqName] } { nil };
     if (seq.notNil && { seq.size > 0 }) { ~applyRhythmStep.(seq[0]) };
 
-    // seqDepth is normally owned by the global CC 18 fader (~gSeqDepth) and,
-    // per flow, the MIDI dial (see ~onDialChange) — both of which
+    // seqDepth is owned per flow by the MIDI dial (see ~onDialChange), which
     // ~silenceRhythm above bypasses by zeroing \depth directly. Reassert here:
-    // the global fader sets the base for every active flow, then a
-    // score-level seqDepth: overrides it if the flow declares a fixed/array
-    // value, so the intended depth actually sticks after scene load.
+    // depth starts at 0, then a score-level seqDepth: overrides it if the
+    // flow declares a fixed/array value, so the intended depth actually
+    // sticks after scene load.
     scene[\flows].do { |flowDef, i|
         if (flowDef.notNil) {
             var sdVal = flowDef[\seqDepth];
-            ~seqs[i].set(\depth, ~gSeqDepth ?? 0);
+            ~seqs[i].set(\depth, 0);
             if (sdVal.isKindOf(Number)) {
                 ~seqs[i].set(\depth, sdVal);
             };

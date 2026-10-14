@@ -32,8 +32,8 @@
 	~in_nomine_6 = Buffer.read(s, ~sampleLibraryRoot ++ "recordings/purcell_in_nomine_6.wav");
 	~silence = Buffer.read(s, ~sampleLibraryRoot ++ "silence.wav");
 
-	~woodlands = Buffer.read(s, "/Volumes/Samsung_T1/BBC SFX DISCS/BBC Sound Effects Library/Sound Effects - Exterior Atmosphere/2-12 Woodland Atmosphere (Mixed Deciduous) On A Windy Day (Occasional Flying Insect).wav");
-	~seawash = Buffer.read(s, "/Volumes/Samsung_T1/BBC SFX DISCS/BBC Sound Effects Library/Sound Effects - Exterior Atmosphere/2-03 Seawash, Gentle With Occasional Seagull.wav");
+	~woodlands = Buffer.read(s, ~sampleLibraryRoot ++ "recordings/Sound Effects - Exterior Atmosphere/2-12 Woodland Atmosphere (Mixed Deciduous) On A Windy Day (Occasional Flying Insect).wav");
+	~seawash = Buffer.read(s, ~sampleLibraryRoot ++ "recordings/Sound Effects - Exterior Atmosphere/2-03 Seawash, Gentle With Occasional Seagull.wav");
 
 	~whale3 = Buffer.readChannel(s, whaleFolder ++ "minke-whale-balaenoptera-acutorostrata.wav", channels: [0, 0]);
 	~whale4 = Buffer.readChannel(s, whaleFolder ++ "fin-whale-balaenoptera physalus.wav", channels: [0, 0]);

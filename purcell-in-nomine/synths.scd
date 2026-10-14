@@ -56,6 +56,10 @@ SynthDef(\layerMixer, {
 // tremWave (0–1): crossfade from sine toward tremTarget shape
 // tremTarget (0=saw, 1=triangle, 2=pulse, 3=revSaw): target waveform
 // tremPulseWidth (0–1): fraction of cycle that is loud when target=pulse
+// reso (0/1): flow opts in to the resonator (score's reso: true)
+// resoAmt (0–1): global resonator strength (CC 18) — raises comb feedback
+//   and wet mix together; 0 = transparent, 1 = long ringing pitched tone
+// resoFreq (Hz): comb pitch (score's resoNote:)
 SynthDef(\flowMixer, {
 	|inBus, out=0, amp=1, lag=3,
 	tremDepth=0, tremRate=4, tremPhase=0,
@@ -63,8 +67,9 @@ SynthDef(\flowMixer, {
 	tremDepth2=0, tremRate2=2, tremPhase2=0,
 	tremSkew2=0.5, tremWave2=0, tremTarget2=0, tremPulseWidth2=0.5,
 	seqBus= -1,
-	delaySend=0, delayBus=0|
-	var sig, seqGate;
+	delaySend=0, delayBus=0,
+	reso=0, resoAmt=0, resoFreq=185|
+	var sig, seqGate, res, resoT, resoDecay, resoFb, wet;
 	var rate, phasor, sk, sineShape, triShape, sawShape, revSawShape, pulseShape, targetShape, trem;
 	var rate2, phasor2, sk2, sineShape2, triShape2, sawShape2, revSawShape2, pulseShape2, targetShape2, trem2;
 	sig    = In.ar(inBus, 2);
@@ -99,6 +104,18 @@ SynthDef(\flowMixer, {
 	        .range(1 - Lag.kr(tremDepth2, lag), 1);
 	seqGate   = (seqBus >= 0).if(In.kr(seqBus), 1);
 	sig       = sig * Lag.kr(amp, lag);
+	// --- Resonator: tuned comb filter. Output gain is the geometric mean of
+	// (1 - fb) (keeps steady on-pitch tones at unity) and sqrt(1 - fb^2)
+	// (keeps noise/transients at unity), splitting the difference so grainy
+	// input doesn't vanish at high feedback (~-12 dB noise, ~+12 dB peaks
+	// at full). Wet mix capped at 50% so the dry flow never drops out ---
+	res       = Lag.kr(resoAmt * reso, 0.1);
+	resoT     = Lag.kr(resoFreq, 0.1).reciprocal;
+	resoDecay = res.linexp(0, 1, 0.05, 6);
+	resoFb    = 0.001 ** (resoT / resoDecay);
+	wet       = CombC.ar(sig, 0.05, resoT, resoDecay) * ((1 - resoFb) * (1 - resoFb.squared).sqrt).sqrt;
+	wet       = LeakDC.ar(wet);
+	sig       = XFade2.ar(sig, wet, (res * 1.5).clip(0, 0.5) * 2 - 1);
 	Out.ar(delayBus, sig * Lag.kr(delaySend, lag));
 	sig       = sig * trem * trem2 * seqGate;
 	sig       = Limiter.ar(sig, 0.9);
