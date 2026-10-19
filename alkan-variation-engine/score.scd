@@ -93,14 +93,14 @@
 	// ---- Scene 1 -----------------------------------------------
 	(
 		name: \scene1,
-		delayTime: ~f8,
+		delayTime: ~f2,
 		stepRate: 8 / ~qn,  // 16 steps = 2*~qn, the same bar as flow 4's dur loop
 		flows: [
 			(
 				// dials:      [\seqDepth, \grainWidth],
 				dials:      [\doubleAmp, \grainWidth],
 
-				freeze:     false, spectral: true, delay: false,
+				freeze:     true, spectral: false, delay: true,
 				amp:        2.0,
 				dur:        Pseq([
 					~f2, ~f2,
@@ -134,9 +134,8 @@
 			),
 
 			(
-				// dials:      [\seqDepth, \grainWidth],
 				dials:      [\doubleAmp, \grainWidth],
-				freeze:     false, spectral: false, delay: false,
+				freeze:     true, spectral: false, delay: false,
 				amp:        2.0,
 				dur:        Pseq([
 					~f1, ~f1, Rest(~f2),
@@ -157,42 +156,6 @@
 				rate: Pwhite(0.999, 1.001),
 				grainCenter: [0.0, 1.0, 0.0], grainWidth: [0, 0.01, 0],
 				grainCenterLag: 0.2,
-				doubleAmp: [0,1,0], double: [1.5],
-				seqDepth: [0,1,0],
-
-				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~f8/4 + 0.125, tremSkew: 0.5, tremWave: 0.0, tremPhase: 2*pi/3, tremPulseWidth: 0.8, tremTarget: \pulse,
-
-				tremDepth2:  [0.0, 1.0, 0.0], tremRate2: ~f8*4, tremSkew2: 0.5, tremWave2: 0, tremPulseWidth2: 0.3, tremTarget2: \saw,
-
-				steps: [
-					(buffers: [
-						~music
-					])
-				],
-			),
-
-			(
-				dials:      [\doubleAmp, \grainWidth],
-				// dials:      [\seqDepth, \grainWidth],
-				freeze:     true, spectral: false, delay: false,
-				amp:        2.0,
-				dur:        Pseq([
-					~f1, ~f2, Rest(~f1),
-					Rest(~f1), ~f2, ~f1,
-					Rest(~f2), ~f2,
-					Rest(~f2), ~f2,
-
-					~f1, ~f2, Rest(~f1),
-					Rest(~f1), ~f2, ~f1,
-					Rest(~f2), ~f2,
-					Rest(~f2), Rest(~f1), ~f1
-				], inf),
-				pan: -0.25,
-				doubleAmp: [0.0, 1.0, 0.0], double: [6/3],
-				attack: 0.05, release: 0.05,
-				rate: Pwhite(0.999, 1.001),
-				grainCenter: [0.0, 1.0, 0.0], grainWidth: [0, 0.01, 0],
-				grainCenterLag: 0.02,
 				doubleAmp: [0,1,0], double: [2.0],
 				seqDepth: [0,1,0],
 
@@ -206,10 +169,45 @@
 					])
 				],
 			),
+
+			(
+				dials:      [\doubleAmp, \grainWidth],
+				// dials:      [\seqDepth, \grainWidth],
+				freeze:     false, spectral: true, delay: false,
+				amp:        2.0,
+				dur:        Pseq([
+					~f1, ~f2, Rest(~f1),
+					Rest(~f1), ~f2, ~f1,
+					Rest(~f2), ~f2,
+					Rest(~f2), ~f2,
+
+					~f1, ~f2, Rest(~f1),
+					Rest(~f1), ~f2, ~f1,
+					Rest(~f2), ~f2,
+					Rest(~f2), Rest(~f1), ~f1
+				], inf),
+				pan: -0.25,
+				doubleAmp: [0.0, 1.0, 0.0], double: [0.5],
+				attack: 0.05, release: 0.05,
+				rate: Pwhite(0.999, 1.001),
+				grainCenter: [0.0, 1.0, 0.0], grainWidth: [0, 0.01, 0],
+				grainCenterLag: 0.02,
+				seqDepth: [0,1,0],
+
+				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~f8/4 + 0.125, tremSkew: 0.5, tremWave: 0.0, tremPhase: 2*pi/3, tremPulseWidth: 0.8, tremTarget: \pulse,
+
+				tremDepth2:  [0.0, 1.0, 0.0], tremRate2: ~f8*4, tremSkew2: 0.5, tremWave2: 0, tremPulseWidth2: 0.3, tremTarget2: \saw,
+
+				steps: [
+					(buffers: [
+						~music
+					])
+				],
+			),
 			(
 				// dials:      [\seqDepth, \grainWidth],
 				dials:      [\doubleAmp, \grainWidth],
-				freeze:     true, spectral: false, delay: false,
+				freeze:     false, spectral: true, delay: false,
 				amp:        2.0,
 				dur:        Pseq([
 					~f2, ~f2,
@@ -217,7 +215,7 @@
 					Rest(~f1), ~f2, ~f1,
 				], inf),
 				pan: 0.7,
-				doubleAmp: [0.0, 1.0, 0.0], double: [0.5],
+				doubleAmp: [0.0, 1.0, 0.0], double: [0.25],
 				attack: 0.05, release: 0.05,
 				rate: Pwhite(0.999, 1.001),
 				seqDepth: [0,1,0],
@@ -236,8 +234,36 @@
 
 
 			(
-				dials:      [\grainWidth, \tremDepth],
-				freeze:     false, spectral: true, delay: false, reso: true, resoNote: \Db2,
+				dials:      [\grainWidth, \doubleAmp],
+				freeze:     false, spectral: true, delay: true,
+				amp:        2.0,
+				// 12 sixteenths = a 3/4 cell against the 4/4 bar;
+				// four cycles = 3 bars
+				dur:        Pseq([
+					~f4
+
+
+
+				], inf),
+				pan: 0.15,
+				attack: 0.01, release: 0.01,
+				rate: Pwhite(0.999, 1.001),
+				doubleAmp: [0,1,0], double: [0.25],//, 2.0],
+
+				grainCenter: 0.5, grainWidth: [0.0, 1.0, 0.0],
+				steps: [
+					(buffers: [
+						~wb1
+
+					])
+				],
+			),
+
+
+
+			(
+				dials:      [\grainWidth, \doubleAmp],
+				freeze:     false, spectral: false, delay: true, reso: true, resoNote: \Db2,
 				amp:        2.0,
 				// 48 sixteenths = 3 bars: straight 8ths, then dotted-8th
 				// hemiola slipping across the barline, then a broken fill
@@ -248,6 +274,7 @@
 				pan: 0.5,
 
 				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~qn*4, tremSkew: 0.5, tremWave: 0.0, tremTarget: \saw,
+				doubleAmp: [0,1,0], double: [1.001],
 				attack: 0.001, release: 0.001,
 				rate: Pwhite(0.999, 1.001),
 				grainCenter: 0/127, grainWidth: [0.0, 0.25, 0.0],
@@ -257,35 +284,11 @@
 					])
 				],
 			),
-			(
-				dials:      [\grainWidth, \doubleAmp],
-				freeze:     true, spectral: true, delay: true, reso: true, resoNote: \Ab2,
-				amp:        2.0,
-				// 24 sixteenths = 1.5 bars, grouped 3+3+3+3+2+3+3+2+2;
-				// lands back on the downbeat every 3 bars
-				dur:        Pseq([
-					~f2, Rest(~f1),
-					~f1, Rest(~f2),
-					Rest(~f2), ~f1,
-					~f2, ~f1,
-					~f2,
-				], inf),
-				pan: -0.5,
-				doubleAmp: [0,1,0], double:[3.0],
-				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~qn*16, tremSkew: 0.5, tremWave: 0.0, tremTarget: \saw,
-				attack: [0.001, 0.3, 0.001], release: 0.001,
-				rate: Pwhite(0.999, 1.001),
-				grainCenter: 0.0, grainWidth: [0.0, 0.25, 0.0],
-				steps: [
-					(buffers: [
-						~b15
-					])
-				],
-			),
+
 
 			(
 				dials:      [\grainWidth, \doubleAmp],
-				freeze:     false, spectral: true, delay: false,
+				freeze:     false, spectral: false, delay: false,
 				amp:        2.0,
 				// 12 sixteenths = a 3/4 cell against the 4/4 bar;
 				// four cycles = 3 bars
@@ -305,11 +308,11 @@
 
 				], inf),
 				pan: 0.15,
-				attack: 0.001, release: 0.001,
+				attack: 0.01, release: 0.01,
 				rate: Pwhite(0.999, 1.001),
 				doubleAmp: [0,1,0], double: [0.5, 2.0],
 
-				grainCenter: Pwhite(0, 0.8, inf), grainWidth: [0.0, 0.1, 0.0],
+				grainCenter: Pwhite(0, 0.8, inf), grainWidth: [0.0, 0.04, 0.0],
 				steps: [
 					(buffers: [
 						~b4
@@ -338,7 +341,7 @@
 				], inf),
 				pan: -0.1,
 				attack: 0.001, release: 0.001,
-				rate: Pwhite(0.999, 1.001),
+				rate: 3*Pwhite(0.999, 1.001),
 				doubleAmp: [0,1,0], double: [3.0],
 				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~qn*32, tremSkew: 0, tremWave: 0.0, tremTarget: \saw,
 
@@ -349,31 +352,7 @@
 					])
 				],
 			),
-/*			(
-				dials:      [\tremDepth, \doubleAmp],
-				freeze:     false, spectral: false, delay: false,
-				amp:        0.2,
-				dur:        Pwhite(0.2, 0.3),
-				pan: -0.1,
-				rate: Pwhite(0.999, 1.001),
-				attack:     0.2, release: 0.2,
 
-				grainWidth: Pwhite(0.3, 0.4), grainCenter: 0.25,
-				seqDepth: [0.0, 1.0, 0.0],
-				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~qn*4, tremSkew: 0.5, tremWave: 0.0, tremTarget: \saw,
-				doubleAmp: [0,1,0], double: [2.0],
-				steps: [
-					(buffers: [
-						~cl[\Gb6], ~cl[\A6], ~cl[\Ab6], ~silence,
-						~cl[\Gb6], ~cl[\A6], ~cl[\Ab6], ~silence,
-						~cl[\Gb6], ~cl[\A6], ~cl[\Ab6], ~cl[\E6], ~cl[\D6], ~silence,
-						~flt[\Gb6], ~flt[\A6], ~flt[\Ab6], ~silence,
-						~flt[\Gb6], ~flt[\A6], ~flt[\Ab6], ~flt[\B6], ~silence,
-						~flt[\Db7], ~flt[\A6], ~flt[\Ab6], ~flt[\B6], ~flt[\F6], ~silence,
-
-					], repeats: [12, 14, 13, 11, 15]),
-				],
-			),*/
 
 		],
 		rhythm: \fourFourGrooves,

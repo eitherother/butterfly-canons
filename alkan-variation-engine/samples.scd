@@ -28,13 +28,11 @@
 ~b13 = Buffer.read(s, ~sampleLibraryRoot ++ "recordings/kyrie_beats/b13.wav");
 ~b14 = Buffer.read(s, ~sampleLibraryRoot ++ "recordings/kyrie_beats/b14.wav");
 ~b15 = Buffer.read(s, ~sampleLibraryRoot ++ "recordings/kyrie_beats/b15.wav");
-)
-
 ~b16 = Buffer.read(s, ~sampleLibraryRoot ++ "recordings/kyrie_beats/b16.wav");
 ~b17 = Buffer.read(s, ~sampleLibraryRoot ++ "recordings/kyrie_beats/b17.wav");
+~wb1 = Buffer.read(s, ~sampleLibraryRoot ++ "recordings/whale_beats/b1.wav");
 
 
-(
 ~cl   = Dictionary.new;
 ~flt  = Dictionary.new;
 ~bass = Dictionary.new;
