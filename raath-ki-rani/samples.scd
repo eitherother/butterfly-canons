@@ -8,6 +8,7 @@
 ~bass = Dictionary.new;
 ~pnmf = Dictionary.new;
 ~pnff = Dictionary.new;
+~vib = Dictionary.new;
 
 /*~cl   = Dictionary.new;
 ~flt  = Dictionary.new;
@@ -53,10 +54,10 @@
 		~marimba[noteName] = Buffer.read(s, file.fullPath);
 	};*/
 
-/*	PathName(vibFolder).files.do { |file|
+	PathName(vibFolder).files.do { |file|
 		var noteName = file.fileNameWithoutExtension.split($.).at(2).asSymbol;
 		~vib[noteName] = Buffer.read(s, file.fullPath);
-	};*/
+	};
 
 	PathName(pnffFolder).files.do { |file|
 		var noteName = file.fileNameWithoutExtension.split($.).at(0).asSymbol;
