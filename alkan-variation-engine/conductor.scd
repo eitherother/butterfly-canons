@@ -73,6 +73,10 @@
 ~currentStep    = Array.fill(8, { 0 });
 ~currentDurStep = Array.fill(8, { 0 });
 ~activeFlows    = Array.fill(8, { false });
+// Per-flow resoNote stream — built at scene load. A Pattern (e.g. Pseq) is
+// stepped once per main grain (shadow grains don't advance it), and survives
+// harmony advances so the note sequence doesn't restart on each step.
+~resoStreams    = Array.fill(8, { nil });
 ~buttonActive  = Array.fill(8, { false });
 ~grainCenterCounter = 0;
 ~checkpointsFired = [];
@@ -259,6 +263,17 @@
     { atk }
 };
 
+// Pulls the next note from the flow's resoNote stream and sends it to the
+// mixer. A finished (finite) stream returns nil, which leaves the pitch held.
+// latency: pass s.latency from a Pbind so the retune lands with its grain.
+~nextResoNote = { |flowIndex, latency|
+    var note = ~resoStreams[flowIndex] !? { |st| st.next };
+    if (note.isKindOf(Symbol)) { note = ~noteNameToMidi.(note) };
+    if (note.notNil) {
+        s.makeBundle(latency, { ~mixers[flowIndex].set(\resoFreq, note.midicps) })
+    };
+};
+
 ~applyStepToMixer = { |flowIndex, step|
     ~mixers[flowIndex].set(\amp, ~flowFaders[flowIndex]);
 };
@@ -356,7 +371,7 @@
 
 
 ~buildGranularPdef = { |flowIndex, flowDef, stepIndex, withOffset = false|
-    var step, offset, b2, b2On, pdefName, pairs, mainPat, double, shadows;
+    var step, offset, b2, b2On, pdefName, pairs, mainPairs, mainPat, double, shadows;
     step     = flowDef[\steps][stepIndex];
     offset   = if (withOffset) { flowDef[\startOffset] ?? 0 } { 0 };
     b2       = flowDef[\button];
@@ -380,10 +395,15 @@
         \pan,        flowDef[\pan] ?? 0,
     ];
     if (b2On) { b2.keysValuesDo { |k, v| pairs = pairs ++ [k.asSymbol, v] } };
+    // Per-grain resonator retune — main stream only, so shadows built from
+    // pairs below don't also advance the note sequence.
+    mainPairs = if (flowDef[\resoNote].isKindOf(Pattern)) {
+        pairs ++ [\resoTick, Pfunc({ ~nextResoNote.(flowIndex, s.latency); 0 })]
+    } { pairs };
     mainPat = if ((step[\double] ?? flowDef[\double]).notNil) {
         double  = step[\double] ?? flowDef[\double];
         if (double.isKindOf(Pattern)) {
-            Ppar([Pbind(*pairs), Pbind(*(pairs ++ [
+            Ppar([Pbind(*mainPairs), Pbind(*(pairs ++ [
                 \rate,         ~buildRateSeq.(step, flowDef, flowIndex) * double,
                 \amp,          Pfunc({ (flowDef[\amp] ?? 0.08) * ~flowDials[flowIndex][4].linlin(0, 127, ~dialRanges[flowIndex][4][0], ~dialRanges[flowIndex][4][1]) }),
                 \freezeSend,   0,
@@ -398,10 +418,10 @@
                     \spectralSend, 0,
                 ]))
             };
-            Ppar([Pbind(*pairs)] ++ shadows)
+            Ppar([Pbind(*mainPairs)] ++ shadows)
         }
     } {
-        Pbind(*pairs)
+        Pbind(*mainPairs)
     };
     Pdef(pdefName, if (offset > 0) {
         Pseq([Pbind(\type, \rest, \dur, Pn(offset, 1)), mainPat], 1)
@@ -471,7 +491,7 @@
     scene[\flows].do { |flowDef, i|
         if (flowDef.notNil) {
             var step0, td, gw, tdRange, gwRange, gc, da, daRange, atk, atkRange, td2, td2Range;
-            var ts, tsRange, tw, twRange, ts2, ts2Range, tw2, tw2Range, sd, sdRange, resoNote;
+            var ts, tsRange, tw, twRange, ts2, ts2Range, tw2, tw2Range, sd, sdRange;
             step0 = flowDef[\steps][0];
             ~activeFlows[i] = true;
             ~storeDialRanges.(i, flowDef);
@@ -554,6 +574,7 @@
 
             ~flowFaders[i]   = 0.0;
 
+            ~resoStreams[i] = (flowDef[\resoNote] ?? \Gb3).asStream;
             ~applyStepToMixer.(i, step0);
             ~applyFlowToMixer.(i, flowDef);
             ~buildFlowPdef.(i, flowDef, 0, true);
@@ -561,11 +582,11 @@
             Pdef(("flow" ++ i).asSymbol).play;
             ~setDelaySend.(i, flowDef[\delay] ? false);
             ~mixers[i].set(\reso, (flowDef[\reso] ? false).if(1, 0));
-            resoNote = flowDef[\resoNote] ?? \Gb3;
-            if (resoNote.isKindOf(Symbol)) { resoNote = ~noteNameToMidi.(resoNote) };
-            ~mixers[i].set(\resoFreq, resoNote.midicps);
+            // A Pattern is stepped by the grains themselves (see ~buildGranularPdef)
+            if (flowDef[\resoNote].isKindOf(Pattern).not) { ~nextResoNote.(i) };
         } {
             ~activeFlows[i]           = false;
+            ~resoStreams[i]           = nil;
             ~flowDials[i]             = [63, 0, 63, 0, 63, 63, 0, 63, 0, 63, 0];
             ~flowFaders[i]            = 0.0;
             ~flowDialTypes[i]         = [\seqDepth, \grainCenter];

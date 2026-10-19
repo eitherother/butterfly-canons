@@ -52,3 +52,4 @@ s.waitForBoot {
 
 
 ~loadScene.(0, 0);
+

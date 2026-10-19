@@ -16,7 +16,8 @@
 //   spectral:   false         — route grains to spectral bus (pre-fader, like freeze)
 //   delay:      false         — tap flow to global delay send
 //   reso:       false         — run flow through the tuned resonator; CC 18 sets the amount
-//   resoNote:   \Gb3          — resonator pitch; note name or raw MIDI int
+//   resoNote:   \Gb3          — resonator pitch; note name or raw MIDI int, or a Pattern
+//                               (e.g. Pseq([\Db2, \Ab2], inf)) stepped once per grain
 //   amp:        0.08          — grain amplitude
 //   dur:        0.5           — grain firing interval (seconds); Pattern for variation
 //   attack:     0.05          — grain attack (seconds); use 0.5 for smooth wash
@@ -119,7 +120,7 @@
 				rate: Pwhite(0.999, 1.001),
 				grainCenter: [0.0, 1.0, 0.0], grainWidth: [0, 0.01, 0],
 				grainCenterLag: 0.01,
-				doubleAmp: [0,1,0], double: [2.0],
+				doubleAmp: [0,1,0], double: [2.midiratio],
 				seqDepth: [0,1,0],
 
 				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~f8/4 + 0.125, tremSkew: 0.5, tremWave: 0.0, tremPhase: 2*pi/3, tremPulseWidth: 0.8, tremTarget: \pulse,
@@ -156,7 +157,7 @@
 				rate: Pwhite(0.999, 1.001),
 				grainCenter: [0.0, 1.0, 0.0], grainWidth: [0, 0.01, 0],
 				grainCenterLag: 0.2,
-				doubleAmp: [0,1,0], double: [2.0],
+				doubleAmp: [0,1,0], double: [4.midiratio],
 				seqDepth: [0,1,0],
 
 				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~f8/4 + 0.125, tremSkew: 0.5, tremWave: 0.0, tremPhase: 2*pi/3, tremPulseWidth: 0.8, tremTarget: \pulse,
@@ -187,7 +188,7 @@
 					Rest(~f2), Rest(~f1), ~f1
 				], inf),
 				pan: -0.25,
-				doubleAmp: [0.0, 1.0, 0.0], double: [0.5],
+				doubleAmp: [0.0, 1.0, 0.0], double: [-3.midiratio],
 				attack: 0.05, release: 0.05,
 				rate: Pwhite(0.999, 1.001),
 				grainCenter: [0.0, 1.0, 0.0], grainWidth: [0, 0.01, 0],
@@ -215,7 +216,7 @@
 					Rest(~f1), ~f2, ~f1,
 				], inf),
 				pan: 0.7,
-				doubleAmp: [0.0, 1.0, 0.0], double: [0.25],
+				doubleAmp: [0.0, 1.0, 0.0], double: [-5.midiratio],
 				attack: 0.05, release: 0.05,
 				rate: Pwhite(0.999, 1.001),
 				seqDepth: [0,1,0],
@@ -263,7 +264,7 @@
 
 			(
 				dials:      [\grainWidth, \doubleAmp],
-				freeze:     false, spectral: false, delay: true, reso: true, resoNote: \Db2,
+				freeze:     false, spectral: false, delay: true,  reso: true, resoNote: Pseq([\Gb1, \Db2, \Gb2, \Ab2, \A2], inf),
 				amp:        2.0,
 				// 48 sixteenths = 3 bars: straight 8ths, then dotted-8th
 				// hemiola slipping across the barline, then a broken fill
@@ -288,7 +289,7 @@
 
 			(
 				dials:      [\grainWidth, \doubleAmp],
-				freeze:     false, spectral: false, delay: false,
+				freeze:     false, spectral: false, delay: false, reso: true, resoNote: Pseq([\Gb1, \Db2, \Gb2, \Ab2, \A2], inf),
 				amp:        2.0,
 				// 12 sixteenths = a 3/4 cell against the 4/4 bar;
 				// four cycles = 3 bars
@@ -320,23 +321,29 @@
 				],
 			),
 
-
 			(
+				dials:      [\tremDepth, \grainWidth],
+				freeze:     true, spectral: false, delay: false,
+				amp:        0.3,
+				dur:        ~f8, //Pwhite(0.03, 0.07),
+				attack:     0.01, release: 0.01,
+				rate: Pwhite(0.999, 1.001),
+				attack:     0.1, release: 0.1,
+
+				grainWidth: [0.05, 0.2, 0.05], grainCenter: 0.25,
+				seqDepth: [0.0, 1.0, 0.0],
+				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~qn*8, tremSkew: 0, tremWave: 0.0,
+				doubleAmp: [0,1,0], double: [2.0],
+				steps: [
+					(buffers: [~bass[\Db1]], repeats: [1]),
+				],
+			),
+/*			(
 				dials:      [\tremDepth, \doubleAmp],
-				freeze:     false, spectral: false, delay: false, reso: true, resoNote: \Db2,
+				freeze:     false, spectral: false, delay: false,
 				amp:        2.0,
-				// 12 sixteenths = a 3/4 cell against the 4/4 bar;
-				// four cycles = 3 bars
 				dur:        Pseq([
-					~f4, //~f1, ~f1,
-/*					Rest(~f2), ~f1, ~f1,
-					Rest(~f2), ~f1, ~f1,
-					Rest(~f2), ~f2,
-					~f2, ~f1, ~f1,
-					Rest(~f2), ~f1, ~f1,
-					Rest(~f2), ~f1, ~f1,
-					Rest(~f4),
-					Rest(~f2), ~f1, ~f1,*/
+					~f4,
 
 				], inf),
 				pan: -0.1,
@@ -351,7 +358,7 @@
 						~b16
 					])
 				],
-			),
+			),*/
 
 
 		],
