@@ -57,9 +57,6 @@
 
 (
 
-
-~music = ~moore;
-
 ~bpm = 120;
 
 ~durScale = 1;
@@ -99,7 +96,7 @@
 				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~qn*2, tremSkew: 0.5, tremWave: 0.8, tremTarget: \pulse,
 				steps: [
 					(buffers: [
-						~music
+						~moore
 					])
 				],
 			),
@@ -122,7 +119,7 @@
 				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~qn*4, tremSkew: 0.5, tremWave: 0.8, tremTarget: \pulse,
 				steps: [
 					(buffers: [
-						~music
+						~moore
 					])
 				],
 			),
@@ -142,7 +139,7 @@
 				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~qn*1, tremSkew: 0.5, tremWave: 0.8, tremTarget: \pulse,
 				steps: [
 					(buffers: [
-						~music
+						~moore
 					])
 				],
 			),
@@ -203,7 +200,36 @@
 				],
 			),
 
-			// piano
+
+			(
+				dials:      [\tremDepth, \attack],
+				freeze:     false, spectral: false, delay: true,
+				amp:        1.0,
+				dur:        Pseq([
+					~f8
+				], inf),
+				pan: -0.6,
+				attack: [0.001, 0.1, 0.001], release: 0.001,
+				// rate: Pwhite(0.999, 1.001),
+				double: [2.0, 0.5], doubleAmp: [0.0, 1.0, 0.0],
+
+				grainCenter: 0.5, grainWidth: 1.0,
+				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~qn*16, tremSkew: 0.5, tremWave: 0.9, tremPulseWidth: 0.3, tremTarget: \pulse,
+				steps: [
+					(buffers: [
+						~kick
+					])
+				],
+			),
+
+			nil,nil,nil
+
+
+
+			/*
+			// Alternate version --- winds representing electronic signals
+
+			// vibraphone
 			(
 				dials:      [\tremDepth, \doubleAmp],
 				freeze:     false, spectral: true, delay: false, drive: false,
@@ -303,8 +329,9 @@
 					(buffers: [~flt[\Ab5], ~flt[\Bb5], ~flt[\B5], ~flt[\Db6], ~flt[\Eb6], ~flt[\F6], ~silence], repeats: [17, 18, 19, 20]),
 					(buffers: [~flt[\Gb6], ~flt[\B5], ~flt[\Ab5], ~flt[\Eb6], ~flt[\Bb5], ~flt[\Eb5], ~flt[\Db5], ~flt[\Gb4], ~silence], repeats: [7, 8, 9]),
 
+
 				],
-			),
+			),	*/
 		],
 		rhythm: \grooves,
 		layers: [
