@@ -46,7 +46,7 @@ s.waitForBoot {
 )
 
 // ---- Performance-time actions — evaluate individually, whenever -----
-~record.("Byrd_Mass_in_4_");
+~record.("Byrd_Mass_in_4_for_4_");
 
 ~stopRecording.()
 
