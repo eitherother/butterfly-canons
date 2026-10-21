@@ -1,5 +1,5 @@
 // ============================================================
-// Purcell In Nomine — Conductor
+// Byrd Variation Engine — Conductor
 // ============================================================
 // Manages scene state, Pdef construction, and hardware control.
 // Load after signal_flow.scd and samples.scd.
@@ -752,5 +752,5 @@
     }
 };
 
-"Purcell In Nomine conductor ready.".postln;
+"Byrd Variation Engine conductor ready.".postln;
 )

@@ -1,5 +1,5 @@
 // ============================================================
-// Purcell In Nomine — Init
+// Byrd Variation Engine — Init
 // ============================================================
 // Evaluate the block below once: loads local config, boots the
 // server, loads synths → signal flow → samples (waiting for

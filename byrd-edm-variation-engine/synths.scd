@@ -1,5 +1,5 @@
 // ============================================================
-// Purcell In Nomine — SynthDefs
+// Byrd Variation Engine — SynthDefs
 // ============================================================
 // Evaluate this entire file before signal_flow.scd.
 //
@@ -284,6 +284,6 @@ SynthDef(\triTriad, {
 	Out.ar(out, sig.dup * env * amp);
 }).add;
 
-"Purcell In Nomine SynthDefs loaded.".postln;
+"Byrd Variation Engine SynthDefs loaded.".postln;
 
 )

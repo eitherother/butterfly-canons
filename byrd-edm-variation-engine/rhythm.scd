@@ -1,5 +1,5 @@
 // ============================================================
-// Purcell In Nomine — Rhythm
+// Byrd Variation Engine — Rhythm
 // ============================================================
 // Load after signal_flow.scd.
 //
@@ -164,7 +164,7 @@
 // Initialise all sequencers silent
 ~silenceRhythm.();
 
-"Purcell In Nomine rhythm ready — ~advanceRhythm / ~silenceRhythm".postln;
+"Byrd Variation Engine rhythm ready — ~advanceRhythm / ~silenceRhythm".postln;
 
 )
 

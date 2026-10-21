@@ -1,5 +1,5 @@
 // ============================================================
-// Purcell In Nomine — Signal Flow
+// Byrd Variation Engine — Signal Flow
 // ============================================================
 // Load order: synths → signal_flow → samples
 //
@@ -157,7 +157,7 @@ s.sync;  // wait for Buffer.alloc to complete before creating synths
 	\lag,     3,
 ]);
 
-"Purcell In Nomine signal flow ready.".postln;
+"Byrd Variation Engine signal flow ready.".postln;
 
 } // end fork
 )

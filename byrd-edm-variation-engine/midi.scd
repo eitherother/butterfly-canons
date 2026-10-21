@@ -1,5 +1,5 @@
 // ============================================================
-// Purcell In Nomine — MIDI (Novation Launch Control XL)
+// Byrd Variation Engine — MIDI (Novation Launch Control XL)
 // ============================================================
 // Load after conductor.scd and rhythm.scd.
 //
