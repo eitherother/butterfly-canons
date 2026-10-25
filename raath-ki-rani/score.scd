@@ -47,7 +47,7 @@
 				attack:     0.1, release: 0.3,
 				double: [1.5], doubleAmp: [0.0, 1.0, 0.0],
 				grainWidth: Pwhite(0.4, 0.55), grainCenter: 0.35,
-				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~qn*4, tremSkew: 0.5, tremWave: 0.0, tremTarget: \pulse,
+				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~qn*2, tremSkew: 0.5, tremWave: 0.0, tremTarget: \pulse,
 				steps: [
 					(buffers: [
 						~vla[\A3], ~vla[\D4], ~vla[\Gb4], ~vla[\Db5], ~silence,
@@ -65,7 +65,7 @@
 				attack:     0.1, release: 0.3,
 				double: [1.5], doubleAmp: [0.0, 1.0, 0.0],
 				grainWidth: Pwhite(0.4, 0.55), grainCenter: 0.35,
-				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~qn*8, tremSkew: 0.5, tremWave: 0.8, tremTarget: \pulse,
+				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~qn*4, tremSkew: 0.5, tremWave: 0.8, tremTarget: \pulse,
 
 				steps: [
 					(buffers: [
@@ -89,7 +89,7 @@
 
 				grainWidth: 1.0, grainCenter: 0.5,
 				doubleAmp: [0.0, 1.0, 0.0], double: [2.0],
-				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~qn*6, tremSkew: 0.5, tremWave: 0.0, tremTarget: \saw,
+				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~qn*3, tremSkew: 0.5, tremWave: 0.0, tremTarget: \saw,
 				steps: [
 					(buffers: [
 						~vib[\D6], ~vib[\B5], ~vib[\Gb5], ~silence, ~silence,
@@ -110,6 +110,7 @@
 				attack:     0.1, release: 0.3,
 				double: [1.5], doubleAmp: [0.0, 1.0, 0.0],
 				grainWidth: Pwhite(0.35, 0.45), grainCenter: 0.35,
+				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~qn, tremSkew: 0.5, tremWave: 0.0, tremTarget: \saw,
 				steps: [
 					(buffers: [
 						~bass[\D1], ~bass[\A1], ~silence, ~bass[\E2],
@@ -127,6 +128,8 @@
 				attack:     0.1, release: 0.3,
 				double: [1.5], doubleAmp: [0.0, 1.0, 0.0],
 				grainWidth: Pwhite(0.35, 0.45), grainCenter: 0.2,
+				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~qn, tremSkew: 0.5, tremWave: 0.0, tremTarget: \saw,
+
 				steps: [
 					(buffers: [
 						~voice_E4

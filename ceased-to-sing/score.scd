@@ -12,7 +12,7 @@
 		flows: [
 			(
 				dials:      [\tremDepth, \tremDepth2],
-				freeze:     false, spectral: true, delay: false, drive: false,
+				freeze:     false, spectral: false, delay: false, drive: false,
 				amp:        1.0,
 				dur:        252,
 				pan: -0.4,
@@ -32,7 +32,7 @@
 			),
 			(
 				dials:      [\tremDepth, \tremDepth2],
-				freeze:     false, spectral: true, delay: false, drive: false,
+				freeze:     false, spectral: false, delay: false, drive: false,
 				amp:        1.0,
 				dur:        240,
 				pan: -0.2,
@@ -72,8 +72,8 @@
 			),
 
 			(
-				dials:      [\tremDepth, \grainWidth],
-				freeze:     false, spectral: true, delay: false, drive: false,
+				dials:      [\tremDepth, \doubleAmp],
+				freeze:     false, spectral: false, delay: false, drive: false,
 				amp:        0.3,
 				dur:        2,
 				attack:     0.01, release: 0.01,
@@ -81,6 +81,7 @@
 				attack:     0.1, release: 0.3,
 
 				grainWidth: 1.0, grainCenter: 0.5,
+				double: [2.0], doubleAmp: [0, 1,0],
 				seqDepth: [0.0, 1.0, 0.0],
 				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~qn*4 - 0.125, tremSkew: 0.5, tremWave: 0.0, tremTarget: \saw,
 				steps: [
@@ -119,7 +120,7 @@
 
 			(
 				dials:      [\tremDepth, \grainWidth],
-				freeze:     true, spectral: false, delay: true, drive: false,
+				freeze:     true, spectral: false, delay: false, drive: false,
 				amp:        0.3,
 				dur:        Pwhite(0.1, 0.2),
 				attack:     0.01, release: 0.01,
