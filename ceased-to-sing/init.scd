@@ -47,7 +47,7 @@ s.waitForBoot {
 )
 
 // ---- Performance-time actions — evaluate individually, whenever -----
-~record.("CeasedToSingDraft2_");
+~record.("CeasedToSing_");
 
 ~stopRecording.()
 

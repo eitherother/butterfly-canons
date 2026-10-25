@@ -106,7 +106,7 @@
 
 
 			(
-				dials:      [\attack, \grainWidth],
+				dials:      [\attack, \tremDepth],
 				freeze:     true, spectral: false, delay: false, drive: false,
 				amp:        2.0,
 				// dur:        ~2/~qn*Pseq([
@@ -127,7 +127,7 @@
 				],
 			),
 			(
-				dials:      [\attack, \grainWidth],
+				dials:      [\attack, \tremDepth],
 				freeze:     true, spectral: false, delay: false, drive: false,
 				amp:        2.0,
 /*				dur:        ~durScale*Pseq([
@@ -139,7 +139,7 @@
 				attack:     [0.2, 0.5, 0.2], release: 0.2,
 				rate: Pwhite(0.999, 1.001),
 				grainCenter: [0.0, 1.0, 0], grainWidth: [0.0, 0.01, 0.0],
-				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~qn*1, tremSkew: 0.5, tremWave: 0.8, tremTarget: \pulse,
+				tremDepth:  [0.0, 1.0, 0.0], tremRate: ~qn*4, tremSkew: 0.5, tremWave: 0.8, tremTarget: \pulse,
 				steps: [
 					(buffers: [
 						~music
